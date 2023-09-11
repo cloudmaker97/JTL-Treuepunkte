@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jtlshopplugin>
+    <Name>Bonuspunkte und Prämien</Name>
+    <Description>Kundenbindung steigern durch attraktive Punktesysteme</Description>
+    <Author>Dennis Heinrich</Author>
+    <URL>https://dennis-heinri.ch</URL>
+    <PluginID>dh_bonuspunkte</PluginID>
+    <XMLVersion>100</XMLVersion>
+    <Icon></Icon>
+    <Version>1.0.0</Version>
+    <ShopVersion>5.0.0</ShopVersion>
+    <CreateDate>2023-09-11</CreateDate>
+    <Install>
+        <CSS>
+            <file>
+                <name>general.css</name>
+                <priority>1</priority>
+            </file>
+        </CSS>
+        <!--
+        Mindestens ein Installationsknoten muss im Plugin vorhanden sein
+        @see https://jtl-devguide.readthedocs.io/projects/jtl-shop/de/latest/shop_plugins/infoxml.html
+        -->
+    </Install>
+</jtlshopplugin>
