@@ -2,9 +2,9 @@
 
 ## Aufgaben und Ziele
 
-- [ ]  Planung und Organisation
+- [100%]  Planung und Organisation
 - [ ]  Software programmieren
-  - [ ]  Meilenstein: Erhalten von Punkten
+  - [70%]  Meilenstein: Erhalten von Punkten (Type: Cart is finished)
   - [ ]  Meilenstein: Ausgeben von Punkten
   - [ ]  Meilenstein: Spezialseiten für Kunde
   - [ ]  Meilenstein: Spezialseite für Betreiber
