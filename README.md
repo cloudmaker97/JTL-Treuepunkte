@@ -4,7 +4,7 @@
 
 - [100%]  Planung und Organisation
 - [ ]  Software programmieren
-  - [70%]  Meilenstein: Erhalten von Punkten (Type: Cart is finished)
+  - [80%]  Meilenstein: Erhalten von Punkten
   - [ ]  Meilenstein: Ausgeben von Punkten
   - [ ]  Meilenstein: Spezialseiten für Kunde
   - [ ]  Meilenstein: Spezialseite für Betreiber
@@ -20,7 +20,6 @@ Primäre Unterstützung und Support nur für das Nova-Template von JTL. Besonder
   - Je definierter Einkaufssumme, eine definierte Anzahl von Punkten (Funktionsattribut)
   - Kaufen bestimmter Artikel oder Artikeln in einer Kategorie (Funktionsattribut)
   - Werben von Neukunden (Registration)
-  - Je Bestellabschluss (Warenkorb)
 - **Ausgeben von Punkten**
   - Preisnachlass für eine Bestellung (Gutschein)
   - Erhalten von speziellen Produkten

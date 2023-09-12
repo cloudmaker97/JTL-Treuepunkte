@@ -1,16 +1,19 @@
 <?php
-namespace Plugin\dh_bonuspunkte\source\classes\evaluate;
+namespace Plugin\dh_bonuspunkte\source\classes\cart\evaluator;
 use JTL\Cart\CartItem;
 use JTL\Session\Frontend;
-use Plugin\dh_bonuspunkte\source\classes\points\types\CartType;
 use Plugin\dh_bonuspunkte\source\interfaces\points\IPoint;
 
-class PointEvaluator {
+/**
+ * This class is the base class for all point evaluators. It is always needed when 
+ * points should be evaluated from several points classes (/classes/points)
+ */
+class CartEvaluator {
     /**
-     * This array contains all registered point types for evaulation
+     * This array contains all registered point classes for evaulation
      * @var IPoint[]
      */
-    private $pointTypes = [];
+    private $pointClasses = [];
 
     /**
      * This array contains all results of the evaluation. Each point type
@@ -27,16 +30,23 @@ class PointEvaluator {
         $this->pointResults = [];
         // Iterate over all point types
         foreach($this->getPointTypes() as $pointType) {
-            // If the point type is a cart type, evaluate the cart positions
-            if($pointType->getType()->getName() == CartType::TYPE_NAME) {
-                $positions = $this->getCartPositions();
-                foreach ($positions as $position) {
-                    $points = $pointType->getPointAmount($position);
-                    $pointResult = new PointResult($pointType, $points);
-                    $this->pointResults[] = $pointResult;
-                }
+            $positions = $this->getCartPositions();
+            foreach ($positions as $position) {
+                $points = $pointType->getPointAmount($position);
+                $pointResult = new PointResult($pointType, $points);
+                $this->pointResults[] = $pointResult;
             }
         }
+    }
+
+    /**
+     * Returns the products in the cart
+     * @return CartItem[]
+     */
+    private function getCartPositions(): array {
+        $cart = Frontend::getCart();
+        $cartPositions = $cart->PositionenArr;
+        return $cartPositions;
     }
 
     /**
@@ -67,7 +77,7 @@ class PointEvaluator {
      */
     public function registerPointType(IPoint $pointType): void
     {
-        $this->pointTypes[] = $pointType;
+        $this->pointClasses[] = $pointType;
     }
 
     /**
@@ -76,16 +86,6 @@ class PointEvaluator {
      */
     private function getPointTypes(): array
     {
-        return $this->pointTypes;
-    }
-
-    /**
-     * Returns the products in the cart
-     * @return CartItem[]
-     */
-    private function getCartPositions(): array {
-        $cart = Frontend::getCart();
-        $cartPositions = $cart->PositionenArr;
-        return $cartPositions;
+        return $this->pointClasses;
     }
 }

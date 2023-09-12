@@ -6,12 +6,14 @@
 
 namespace Plugin\dh_bonuspunkte;
 
+use JTL\Events\Dispatcher;
 use JTL\Plugin\Bootstrapper;
-use Plugin\dh_bonuspunkte\source\classes\points\cart\PointsPerArticleOnce;
-use Plugin\dh_bonuspunkte\source\classes\points\cart\PointsPerEuro;
+use Plugin\dh_bonuspunkte\source\classes\cart\evaluator\CartEvaluator;
+use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticle;
+use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticleOnce;
+use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerEuro;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
-use Plugin\dh_bonuspunkte\source\classes\evaluate\PointEvaluator;
-use Plugin\dh_bonuspunkte\source\classes\points\cart\PointsPerArticle;
+use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
 
 /**
  * Class Bootstrap
@@ -19,20 +21,45 @@ use Plugin\dh_bonuspunkte\source\classes\points\cart\PointsPerArticle;
  */
 class Bootstrap extends Bootstrapper
 {
-    public function boot(\JTL\Events\Dispatcher $dispatcher)
+    /**
+     * The event dispatcher from the JTL Shop
+     * @var Dispatcher
+     */
+    private Dispatcher $dispatcher;
+
+    /**
+     * @inheritDoc
+     */
+    public function boot(Dispatcher $dispatcher)
     {
-        // Initialize the point evaluator and add the point types
-        $evaluator = $this->initializeEvaluator();
-        // Reset the debug messages and add some messages
-        DebugManager::resetMessages();
-        DebugManager::addMessage(new \Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage("dh_bonuspunkte loaded", []));
-        DebugManager::addMessage(new \Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage("Evaluated Points: ", [
-            "points" => $evaluator->getAllResultPoints()
-        ]));
-        // Listener after last include: Reload the page after a cart position is added or changed
-        $dispatcher->listen('shop.hook.'.HOOK_LETZTERINCLUDE_INC, [$this, 'reloadPageAfterCartChange']);
+        $this->dispatcher = $dispatcher;
+        $this->dispatcherListeners();
+    }
+
+    private function dispatcherListeners()
+    {
+        // Hook: Cart finalization
+        $this->dispatcher->listen('shop.hook.'.HOOK_BESTELLABSCHLUSS_INC_BESTELLUNGINDB, function() {
+            DebugManager::addMessage(new DebugMessage("Cart triggered"));
+            $this->rewardCart();
+        });
+
+        // Hook: Account Login
+        $this->dispatcher->listen('shop.hook.'.HOOK_KUNDE_CLASS_HOLLOGINKUNDE, function($args) {
+            DebugManager::addMessage(new DebugMessage("Login triggered"));
+            $this->rewardLogin();
+        });
+
+        // Hook: Registration
+        $this->dispatcher->listen('shop.hook.'.HOOK_REGISTRATION_CUSTOMER_CREATED, function($args) {
+            DebugManager::addMessage(new DebugMessage("Registration triggered"));
+            $this->rewardRegister();
+        });
+
         // Listener before smarty include: Add the debug messages to the DOM
-        $dispatcher->listen('shop.hook.'.HOOK_SMARTY_OUTPUTFILTER, [$this, 'includeDebugMessagesToDOM']);
+        $this->dispatcher->listen('shop.hook.'.HOOK_SMARTY_OUTPUTFILTER, function() {
+            $this->includeDebugMessagesToDOM();
+        });
     }
 
     /**
@@ -42,30 +69,48 @@ class Bootstrap extends Bootstrapper
     private function includeDebugMessagesToDOM(): void {
         $consoleMessage = DebugManager::outputMessagesCode();
         pq("head")->append($consoleMessage);
+        DebugManager::resetMessages();
+    }
+
+
+    private function rewardRegister()
+    {
+        // @todo only once per customer, check via database
+        // and only if set in the plugins settings
+    }
+
+    private function rewardLogin()
+    {
+        
+        // @todo only daily, check via database
+        // and only if the period is set in the plugins settings
     }
 
     /**
-     * If a cart position is added or changed, reload the page to update the points 
-     * Seems to be a bug in JTL, that the cart positions are not updated in the session immediately
-    */
-    private function reloadPageAfterCartChange(): void {
-        // The attribute "anzahl" is set, if a cart single position is added or changed
-        if(isset($_POST["anzahl"])) {
-            $currentUrl = $_SERVER['REQUEST_URI'];
-            header(sprintf("Location: %s", $currentUrl));
-            die;
-        }
-    }
-
-    /**
-     * Initialize the point evaluator and add the point types
+     * Adding the points for cart purchases to the temp bonus points storage
      */
-    private function initializeEvaluator(): PointEvaluator {
-        $evaluator = new PointEvaluator();
-        $evaluator->registerPointType(new PointsPerArticle());
-        $evaluator->registerPointType(new PointsPerArticleOnce());
-        $evaluator->registerPointType(new PointsPerEuro());
+    private function rewardCart(): void {
+        $evaluator = new CartEvaluator();
+        // Points per article
+        $pointsPiece = new PointsPerArticle();
+        $pointsPiece->setDefaultPoints(0); // @todo make this configurable
+        $evaluator->registerPointType($pointsPiece);
+        // Points per article once
+        $pointsOnce = new PointsPerArticleOnce();
+        $pointsOnce->setDefaultPoints(0); // @todo make this configurable
+        $evaluator->registerPointType($pointsOnce);
+        // Points per euro
+        $pointsPerEuro = new PointsPerEuro();
+        $pointsPerEuro->setTaxSetting(false); // @todo make this configurable
+        $pointsPerEuro->setDefaultPoints(0); // @todo make this configurable
+        $evaluator->registerPointType($pointsPerEuro);
+        // Evaluate the points
         $evaluator->evaluatePoints();
-        return $evaluator;
+        DebugManager::addMessage(new DebugMessage("Cart: ", [
+            "points" => $evaluator->getAllResultPoints(),
+            "data" => $evaluator->getAllResultObjects(),
+        ]));
+        // @todo withdraw points from customer account
+        // but: only if the order is paid or its delivery status is "shipped"
     }
 }

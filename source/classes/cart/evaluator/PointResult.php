@@ -1,6 +1,11 @@
 <?php
-namespace Plugin\dh_bonuspunkte\source\classes\evaluate;
+namespace Plugin\dh_bonuspunkte\source\classes\cart\evaluator;
 use Plugin\dh_bonuspunkte\source\interfaces\points\IPoint;
+
+/**
+ * Represents a single point result
+ * for further processing
+ */
 class PointResult {
     /**
      * @var IPoint The point type of this result

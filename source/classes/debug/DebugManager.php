@@ -2,9 +2,15 @@
 namespace Plugin\dh_bonuspunkte\source\classes\debug;
 use Plugin\dh_bonuspunkte\source\interfaces\debug\IDebugMessage;
 
+/**
+ * Class DebugManager
+ * Handles all debug messages, from adding, resetting and outputting them
+ */
 class DebugManager {
+    /**
+     * @var string The session key name for the debug messages
+     */
     private const SESSION_KEY_NAME = "dh_bonuspunkte_debug_messages";
-
 
     /**
      * @return string Returns all debug messages as JS-Console HTML code
@@ -57,7 +63,7 @@ class DebugManager {
                 $debugMessages[] = $debugMessage;
             }
         }
-
+        
         return $debugMessages;
     }
 }

@@ -2,6 +2,10 @@
 namespace Plugin\dh_bonuspunkte\source\classes\debug;
 use Plugin\dh_bonuspunkte\source\interfaces\debug\IDebugMessage;
 
+/**
+ * Class DebugMessage
+ * Represents a single debug message
+ */
 class DebugMessage implements IDebugMessage {
     private string $message;
     private array $data = [];
