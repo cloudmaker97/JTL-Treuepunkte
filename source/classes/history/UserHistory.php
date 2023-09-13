@@ -1,14 +1,20 @@
 <?php
 namespace Plugin\dh_bonuspunkte\source\classes\history;
 use JTL\Customer\Customer;
+use JTL\DB\ReturnType;
+use JTL\Shop;
 class UserHistory {
     /** @var UserHistoryEntry[] $historyEntries */
     private $historyEntries = [];
 
     public function __construct(Customer $customer) {
-        // @todo Load from customer
-        // @todo Adding and removing points
-        // @todo Dashboard
+        $this->loadFromCustomer($customer);
+    }
+
+    private function loadFromCustomer(Customer $customer) {
+        $this->historyEntries = [];
+        $results = Shop::Container()->getDB()->queryPrepared("SELECT * FROM dh_bonus_history WHERE userId = :kKunde ORDER BY createdAt DESC", ["kKunde" => $customer->getID()], ReturnType::ARRAY_OF_ASSOC_ARRAYS);
+        var_dump($results);
     }
 
     /**

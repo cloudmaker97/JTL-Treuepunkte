@@ -1,10 +1,20 @@
 # Bonuspunkte & Prämien
 
+## Ihr Ansprechpartner
+
+Dennis Heinrich<br />
+Internet: [https://dennis-heinri.ch](https://dennis-heinri.ch)<br />
+E-Mail: [hey@dennis-heinri.ch](mailto:hey@dennis-heinri.ch)
+
+### Support, Lizenz und Haftungsausschluss
+
+Weitere Entwicklungen auf Anfrage möglich. Ein Anspruch auf die Entwicklung besteht nicht sondern geschieht auf freiwilliger Basis. Es besteht durch die Nutzung kein Anspruch auf Support oder Fehlerbehebung. Die Nutzung erfolgt auf eigene Gefahr und Verantwortung. Die Lizenzbedingungen sind in der `LICENSE` Datei des Plugins zu finden.
+
 ## Aufgaben und Ziele
 
 - [100%]  Planung und Organisation
 - [ ]  Software programmieren
-  - [80%]  Meilenstein: Erhalten von Punkten
+  - [90%]  Meilenstein: Erhalten von Punkten
   - [ ]  Meilenstein: Ausgeben von Punkten
   - [ ]  Meilenstein: Spezialseiten für Kunde
   - [ ]  Meilenstein: Spezialseite für Betreiber
