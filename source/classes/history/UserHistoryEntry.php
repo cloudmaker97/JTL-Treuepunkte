@@ -39,14 +39,6 @@ class UserHistoryEntry {
         return $this->points;
     }
 
-    public function loadId(int $id): UserHistoryEntry {
-        $this->id = $id;
-        $database = Shop::Container()->getDB();
-        $result = $database->queryPrepared("SELECT * FROM " . self::TABLE_NAME . " WHERE id = :id", ["id" => $id]);
-        var_dump($result);
-        return $this;
-    }
-
     /**
      * Create a new entry from the given parameters
      */
@@ -67,7 +59,10 @@ class UserHistoryEntry {
         return $this;
     }
 
-    public function save() {
+    /**
+     * Save the entry to the database
+     */
+    public function save(): void {
         $database = Shop::Container()->getDB();
         $insertObject = new \stdClass();
         $insertObject->userId = $this->userId;
@@ -78,5 +73,4 @@ class UserHistoryEntry {
         $insertObject->valuedAt = $this->valuedAt == null ? null : $this->valuedAt->format("Y-m-d H:i:s");
         $database->insert(self::TABLE_NAME, $insertObject);
     }
-
 }

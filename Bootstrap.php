@@ -16,6 +16,7 @@ use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticleOnce;
 use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerEuro;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
+use Plugin\dh_bonuspunkte\source\classes\history\LastRewarded;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistoryEntry;
 
 /**
@@ -53,12 +54,12 @@ class Bootstrap extends Bootstrapper
 
         // Hook: Registration
         $this->dispatcher->listen('shop.hook.' . HOOK_REGISTRATION_CUSTOMER_CREATED, function ($args) {
-            DebugManager::addMessage(new DebugMessage("Registration triggered"));
             $this->rewardRegister($args);
         });
 
-        // Listener before smarty include: Add the debug messages to the DOM
+        // Hook: Each visit, before the smarty template is rendered
         $this->dispatcher->listen('shop.hook.' . HOOK_SMARTY_OUTPUTFILTER, function () {
+            $this->rewardVisit();
             $this->includeDebugMessagesToDOM();
         });
     }
@@ -74,45 +75,72 @@ class Bootstrap extends Bootstrapper
         DebugManager::resetMessages();
     }
 
-
+    /**
+     * Reward the user for a registration
+     * @todo Make rewards configurable
+     */
     private function rewardRegister($args)
     {
         /** @var Customer $currentUser */
         $currentUser = new Customer($args["customerID"]);
         $userHistoryEntry = new UserHistoryEntry();
-        $userHistoryEntry->createEntry(0, sprintf("Registration: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
-        // @todo and only if amount set in the plugins settings
-        // @todo only once per customer, check via database
+        $userHistoryEntry->createEntry(0, sprintf("Registration am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
     }
 
+    /**
+     * Reward the user for a visit, if the time since the last login is isSecondsSinceDatePast
+     * @todo Make time and rewards configurable
+     */
+    private function rewardVisit()
+    {
+        if(Frontend::getCustomer()->isLoggedIn()) {
+            $currentUser = Frontend::getCustomer();
+            $userHistoryEntry = new UserHistoryEntry();
+            $lastRewarded = new LastRewarded($currentUser);
+            
+            if($lastRewarded->isSecondsSinceDatePast(LastRewarded::SECONDS_DAY, $lastRewarded->getVisitAt())) {
+                $userHistoryEntry->createEntry(0, sprintf("Wiederholter Besuch: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
+                $lastRewarded->setVisitAt()->save();
+            }
+        }
+    }
+
+    /**
+     * Reward the user for a login, if the time since the last login is isSecondsSinceDatePast
+     * @todo Make time and rewards configurable
+     */
     private function rewardLogin($args)
     {
         /** @var Customer $currentUser */
         $currentUser = $args["oKunde"];
         $userHistoryEntry = new UserHistoryEntry();
-        $userHistoryEntry->createEntry(0, sprintf("Login: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
-        // @todo and only if amount set in the plugins settings
-        // @todo only once per customer, check via database
+        $lastRewarded = new LastRewarded($currentUser);
+        
+        if($lastRewarded->isSecondsSinceDatePast(LastRewarded::SECONDS_DAY, $lastRewarded->getLoginAt())) {
+            $userHistoryEntry->createEntry(0, sprintf("Login am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
+            $lastRewarded->setLoginAt()->save();
+        }
     }
 
     /**
      * Adding the points for cart purchases to the temp bonus points storage
+     * @todo Make rewards configurable and tax setting
      */
     private function rewardCart($args): void
     {
         $evaluator = new CartEvaluator();
         // Points per article
         $pointsPiece = new PointsPerArticle();
-        $pointsPiece->setDefaultPoints(0); // @todo make this configurable
+        $pointsPiece->setDefaultPoints(0); 
         $evaluator->registerPointType($pointsPiece);
         // Points per article once
         $pointsOnce = new PointsPerArticleOnce();
-        $pointsOnce->setDefaultPoints(0); // @todo make this configurable
+        $pointsOnce->setDefaultPoints(0); 
         $evaluator->registerPointType($pointsOnce);
         // Points per euro
         $pointsPerEuro = new PointsPerEuro();
-        $pointsPerEuro->setTaxSetting(false); // @todo make this configurable
-        $pointsPerEuro->setDefaultPoints(0); // @todo make this configurable
+        $pointsPerEuro->setTaxSetting(false); 
+        $pointsPerEuro->setDefaultPoints(0); 
         $evaluator->registerPointType($pointsPerEuro);
         // Evaluate the points
         $evaluator->evaluatePoints();
@@ -127,6 +155,6 @@ class Bootstrap extends Bootstrapper
         $orderNumber = $currentOrder->kBestellung;
         $orderNumberClean = $currentOrder->cBestellNr;
         $userHistoryEntry = new UserHistoryEntry();
-        $userHistoryEntry->createEntry($evaluator->getAllResultPoints(), sprintf("Bestellung: %s (%s)", $orderNumberClean, $orderNumber), $currentUser->kKunde, false, $orderNumber)->save();
+        $userHistoryEntry->createEntry($evaluator->getAllResultPoints(), sprintf("Bestellung ausgeführt: %s (%s)", $orderNumberClean, $orderNumber), $currentUser->kKunde, false, $orderNumber)->save();
     }
 }
