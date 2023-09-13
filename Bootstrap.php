@@ -10,6 +10,7 @@ use JTL\Customer\Customer;
 use JTL\Events\Dispatcher;
 use JTL\Plugin\Bootstrapper;
 use JTL\Session\Frontend;
+use JTL\Shop;
 use Plugin\dh_bonuspunkte\source\classes\cart\evaluator\CartEvaluator;
 use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticle;
 use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticleOnce;
@@ -17,6 +18,7 @@ use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerEuro;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
 use Plugin\dh_bonuspunkte\source\classes\history\LastRewarded;
+use Plugin\dh_bonuspunkte\source\classes\history\UserHistory;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistoryEntry;
 
 /**
@@ -42,6 +44,11 @@ class Bootstrap extends Bootstrapper
 
     private function dispatcherListeners()
     {
+        // Hook: Page in the frontend
+        $this->dispatcher->listen('shop.hook.' . HOOK_SEITE_PAGE, function() {
+            $this->frontendLink();
+        });
+
         // Hook: Cart finalization
         $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLABSCHLUSS_INC_BESTELLUNGINDB_ENDE, function ($args) {
             $this->rewardCart($args);
@@ -78,10 +85,10 @@ class Bootstrap extends Bootstrapper
     /**
      * Reward the user for a registration
      */
-    private function rewardRegister($args)
+    private function rewardRegister($args): void
     {
-        $isEnabled = $this->getPluginValue("enableRewardRegister") ?? "N";
-        if ($isEnabled === "Y") {
+        $isEnabled = $this->getPluginValue("enableRewardRegister") ?? "off";
+        if ($isEnabled === "on") {
             /** @var Customer $currentUser */
             $currentUser = new Customer($args["customerID"]);
             $userHistoryEntry = new UserHistoryEntry();
@@ -93,10 +100,10 @@ class Bootstrap extends Bootstrapper
     /**
      * Reward the user for a visit, if the time since the last login is a while ago
      */
-    private function rewardVisit()
+    private function rewardVisit(): void
     {
-        $isEnabled = $this->getPluginValue("enableRewardVisit") ?? "N";
-        if (Frontend::getCustomer()->isLoggedIn() && $isEnabled === "Y") {
+        $isEnabled = $this->getPluginValue("enableRewardVisit") ?? "off";
+        if (Frontend::getCustomer()->isLoggedIn() && $isEnabled === "on") {
             $currentUser = Frontend::getCustomer();
             $userHistoryEntry = new UserHistoryEntry();
             $lastRewarded = new LastRewarded($currentUser);
@@ -112,13 +119,22 @@ class Bootstrap extends Bootstrapper
     }
 
     /**
-     * Reward the user for a login, if the time since the last login is isSecondsSinceDatePast
-     * @todo Make time and rewards configurable
+     * Add the history to the smarty variabless
      */
-    private function rewardLogin($args)
+    private function frontendLink(): void {
+        if(Frontend::getCustomer()->isLoggedIn()) {
+            $history = new UserHistory(Frontend::getCustomer());
+            Shop::Smarty()->assign("dh_bonuspunkte_history", $history);
+        }
+    }
+
+    /**
+     * Reward the user for a login, if the time since the last login is isSecondsSinceDatePast
+     */
+    private function rewardLogin($args): void
     {
-        $isEnabled = $this->getPluginValue("enableRewardLogin") ?? "N";
-        if ($isEnabled === "Y") {
+        $isEnabled = $this->getPluginValue("enableRewardLogin") ?? "off";
+        if ($isEnabled === "on") {
             /** @var Customer $currentUser */
             $currentUser = $args["oKunde"];
             $userHistoryEntry = new UserHistoryEntry();
@@ -135,7 +151,6 @@ class Bootstrap extends Bootstrapper
 
     /**
      * Adding the points for cart purchases to the temp bonus points storage
-     * @todo Make rewards configurable and tax setting
      */
     private function rewardCart($args): void
     {
@@ -152,8 +167,8 @@ class Bootstrap extends Bootstrapper
         $evaluator->registerPointType($pointsOnce);
         // Points per euro
         $pointsPerEuroSettingPoints = (int) $this->getPluginValue("rewardPerEuro") ?? 0;
-        $calculateWithNetPrice = $this->getPluginValue("calculateWithNetPrice") ?? "N";
-        $calculateWithNetPriceBool = $calculateWithNetPrice === "Y";
+        $calculateWithNetPrice = $this->getPluginValue("calculateWithNetPrice") ?? "on";
+        $calculateWithNetPriceBool = $calculateWithNetPrice === "on";
         $pointsPerEuro = new PointsPerEuro();
         $pointsPerEuro->setTaxSetting($calculateWithNetPriceBool);
         $pointsPerEuro->setDefaultPoints($pointsPerEuroSettingPoints);

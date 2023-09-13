@@ -7,10 +7,29 @@
     <PluginID>dh_bonuspunkte</PluginID>
     <XMLVersion>100</XMLVersion>
     <Icon></Icon>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <ShopVersion>5.0.0</ShopVersion>
     <CreateDate>2023-09-11</CreateDate>
     <Install>
+        <FrontendLink>
+            <Link>
+                <Filename>bonus_points.php</Filename>
+                <Name>Bonuspunkte</Name>
+                <Template>bonus_points.tpl</Template>
+                <VisibleAfterLogin>Y</VisibleAfterLogin>
+                <PrintButton>N</PrintButton>
+                <Identifier>dhBonusPointsPage</Identifier>
+                <SSL>2</SSL>
+                <LinkLanguage iso="GER">
+                    <Seo>bonuspunkte</Seo>
+                    <Name>Bonuspunkte</Name>
+                    <Title>Bonuspunkte</Title>
+                    <MetaTitle>Bonuspunkte</MetaTitle>
+                    <MetaKeywords>Bonuspunkte, Übersicht</MetaKeywords>
+                    <MetaDescription>Eine Übersicht über die Bonuspunkte</MetaDescription>
+                </LinkLanguage>
+            </Link>
+        </FrontendLink>
         <Adminmenu>
             <Settingslink sort="1">
                 <Name>Einstellungen</Name>
@@ -20,7 +39,7 @@
                     <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Anmeldungen im Benutzerkonto belohnt werden sollen.</Description>
                     <ValueName>headerLogin</ValueName>
                 </Setting>
-                <Setting type="checkbox" initialValue="N" conf="Y" sort="100">
+                <Setting type="checkbox" initialValue="off" conf="Y" sort="100">
                     <Name>Belohung für regelmäßige Anmeldung aktivieren</Name>
                     <Description>Ob ein Kunde für eine Anmeldung (nach Ablauf der Zeit seiner letzten Anmeldung) Bonuspunkte erhalten soll</Description>
                     <ValueName>enableRewardLogin</ValueName>
@@ -48,7 +67,7 @@
                     <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Besuche (sofern der Benutzer angemeldet ist) belohnt werden sollen.</Description>
                     <ValueName>headerVisit</ValueName>
                 </Setting>
-                <Setting type="checkbox" initialValue="N" conf="Y" sort="200">
+                <Setting type="checkbox" initialValue="off" conf="Y" sort="200">
                     <Name>Belohung für regelmäßige Besucher aktivieren</Name>
                     <Description>Ob ein angemeldeter Kunde für seinen Besuch auf der Seite (nach Ablauf der Zeit für den letzten Besuch) Bonuspunkte erhalten soll</Description>
                     <ValueName>enableRewardVisit</ValueName>
@@ -76,7 +95,7 @@
                     <Description>Hier können Sie Einstellungen treffen, ob Registrationen belohnt werden sollen.</Description>
                     <ValueName>headerRegistration</ValueName>
                 </Setting>
-                <Setting type="checkbox" initialValue="N" conf="Y" sort="300">
+                <Setting type="checkbox" initialValue="off" conf="Y" sort="300">
                     <Name>Belohung für Registration aktivieren</Name>
                     <Description>Ob ein Kunde für seine Registration auf der Seite Bonuspunkte erhalten soll</Description>
                     <ValueName>enableRewardRegister</ValueName>
@@ -93,8 +112,8 @@
                     <Description>Hier können Sie Einstellungen treffen, ob Einkäufe belohnt werden sollen.</Description>
                     <ValueName>headerShopping</ValueName>
                 </Setting>  
-                <Setting type="checkbox" initialValue="Y" conf="Y" sort="400">
-                    <Name>Basispunkte für Euro in Netto</Name>
+                <Setting type="checkbox" initialValue="on" conf="Y" sort="400">
+                    <Name>Berechnungen der Artikelpreise in Netto</Name>
                     <Description>Hier kann angegeben werden, ob die Basispunkte bei Geldberechnungen im Nettopreis berechnet werden. Ansonsten werden die Bruttopreise verwendet.</Description>
                     <ValueName>calculateWithNetPrice</ValueName>
                 </Setting>  

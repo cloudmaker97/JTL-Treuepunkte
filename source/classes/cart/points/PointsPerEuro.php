@@ -54,6 +54,7 @@ class PointsPerEuro implements IPoint {
 	 * @inheritDoc
 	 */
 	public function getPointAmount($data): int {
+		if($data->fVK == null) return 0;
 		$price = $data->fVK[$this->isNetPrice];
 		$allArticlePrice = round($price * $data->nAnzahl);
 		if(isset($data->Artikel->FunktionsAttribute[self::getFunctionAttributName()])) {
