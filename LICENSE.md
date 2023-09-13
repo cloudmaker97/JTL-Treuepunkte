@@ -1,6 +1,6 @@
 # BSD 3-Clause License
 
-Copyright (c) 2023, Dennis Heinrich
+Copyright (c) 2023, Dennis Heinrich<br>
 <https://dennis-heinri.ch>
 
 Redistribution and use in source and binary forms, with or without

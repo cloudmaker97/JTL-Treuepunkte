@@ -1,57 +1,60 @@
 # Bonuspunkte & Prämien
 
-## Ihr Ansprechpartner
+## Allgemeines
 
-Dennis Heinrich<br />
+### Ihr Ansprechpartner
+
+Entwickler: Dennis Heinrich<br />
 Internet: [https://dennis-heinri.ch](https://dennis-heinri.ch)<br />
-E-Mail: [hey@dennis-heinri.ch](mailto:hey@dennis-heinri.ch)
+E-Mail: [hey@dennis-heinri.ch](mailto:hey@dennis-heinri.ch)<br />
+*Anfragen bitte auschließlich per E-Mail.*
 
 ### Support, Lizenz und Haftungsausschluss
 
 Weitere Entwicklungen auf Anfrage möglich. Ein Anspruch auf die Entwicklung besteht nicht sondern geschieht auf freiwilliger Basis. Es besteht durch die Nutzung kein Anspruch auf Support oder Fehlerbehebung. Die Nutzung erfolgt auf eigene Gefahr und Verantwortung. Die Lizenzbedingungen sind in der `LICENSE` Datei des Plugins zu finden.
 
-## Aufgaben und Ziele
+## Einrichtung
 
-- [100%]  Planung und Organisation
-- [ ]  Software programmieren
-  - [90%]  Meilenstein: Erhalten von Punkten
-  - [ ]  Meilenstein: Ausgeben von Punkten
-  - [ ]  Meilenstein: Spezialseiten für Kunde
-  - [ ]  Meilenstein: Spezialseite für Betreiber
-- [ ]  Dokumentation
-- [ ]  Testen / Beta-Test
-- [ ]  Veröffentlichung vor dem 20.09.2023
+### Funktionsattribute in der Warenwirtschaft einrichten
 
-## Geplanter Funktionsumfang
+Einrichtung der folgenden Artikel-Funktionsattribute, um Bonuspunkte individuell auf einen Artikel zu vergeben. Dafür geht man in der Warenwirtschaft über das Menü unter der Fensterleiste auf Artikel → Attribute und klickt auf Gruppe anlegen (Name frei wählbar, es wird aber empfohlen dh_bonuspunkte zu nutzen). Dann wird die neu erstelle Gruppe angeklickt.
 
-Primäre Unterstützung und Support nur für das Nova-Template von JTL. Besondere Anpassungen gegebenenfalls auf Anfrage gegen Geld.
+Für jedes der hier aufgelisteten Attribute muss nun den kleinen Pfeil geklickt werden um dann “Funktionsattribut” anzuklicken. Dann wird jeweils in dem Feld AttributId der Name aus der Tabelle übertragen. Der Datentyp muss für jedes Funktionsattribut über das Auswahlfeld gesetzt werden. Nach Doppelklick auf den Namen kann der Name bearbeitet werden, eine Empfehlung ist ebenfalls der Tabelle zu entnehmen. Um später den Überblick beizubehalten, haben wir ebenfalls eine Beschreibung zu jedem Attribut definiert, welche Sie in dem unteren Feld eintragen können.
 
-- **Erhalten von Punkten durch**
-  - Je definierter Einkaufssumme, eine definierte Anzahl von Punkten (Funktionsattribut)
-  - Kaufen bestimmter Artikel oder Artikeln in einer Kategorie (Funktionsattribut)
-  - Werben von Neukunden (Registration)
-- **Ausgeben von Punkten**
-  - Preisnachlass für eine Bestellung (Gutschein)
-  - Erhalten von speziellen Produkten
-- **Spezialseiten für den Kunden**
-  - Prämienübersicht
-  - Punkteübersicht mit Historie
-- **Spezialseite für Administratoren**
-  - Punkte vergeben und abziehen
+| Attribut-ID | Datentyp | Name | Beschreibung |
+| --- | --- | --- | --- |
+| bonuspunkte_pro_artikel_einmal | Ganzzahl | Bonuspunkte pro Artikel (Einmal) | Definiert wie viele Bonuspunkte der Kunde für den Kauf dieses Artikels erhält. Der Kunde erhält für diesen Artikel im Warenkorb die angegebene Summe, aber nur einmal pro Artikel. |
+| bonuspunkte_pro_artikel | Ganzzahl | Bonuspunkte pro Artikel | Definiert wie viele Bonuspunkte der Kunde für den Kauf dieses Artikels erhält. Der Kunde erhält für jeden Artikel im Warenkorb die angegebene Summe. |
+| bonuspunkte_pro_euro | Ganzzahl | Bonuspunkte nach Euro | Definiert wie viele Bonuspunkte der Kunde für den Kauf dieses Artikels erhält, dabei erhält der Kunde jeweils die angegebene Anzahl, welche durch die Summe des Warenkorbs bestimmt wird. |
 
-## Tech-Stack
+### Plugin konfigurieren
 
-- PHP 8
-- Frontend
-  - TypeScript
-  - SCSS
-  - WebPack → Bundle → Inline (Pagespeed)
-- Dokumentation mit
-  - Notion
-  - MarkDown
+In den Einstellungen des Plugins können Sie die Bonuspunkte für die verschiedenen Aktionen konfigurieren. Die Bonuspunkte werden dann automatisch dem Kundenkonto gutgeschrieben, wenn die Bedingungen erfüllt werden.
 
-## Vermarktung und Preis
+## 2. Erhalten von Punkten
 
-- Kostenlos / Open-Source
-- Veröffentlichung im GitLab von JTL Software
-- Ankündigung im Forum
+### Einkäufe
+
+### Registrierung
+
+### Besuchen der Seite
+
+## 3. Ausgeben von Punkten
+
+### Prämien-Artikel
+
+### Bonusguthaben
+
+<style>
+  /* This is only for the plugin tab needed */
+  .markdown h2 {
+    border-bottom: 4px solid #eee;
+  }
+  .markdown h3 {
+    font-size: .9rem;
+    text-decoration: underline;
+  }
+  .markdown table {
+    margin-bottom: 1rem;
+  }
+</style>

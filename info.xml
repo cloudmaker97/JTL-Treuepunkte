@@ -7,19 +7,113 @@
     <PluginID>dh_bonuspunkte</PluginID>
     <XMLVersion>100</XMLVersion>
     <Icon></Icon>
-    <Version>1.0.0</Version>
+    <Version>1.0.7</Version>
     <ShopVersion>5.0.0</ShopVersion>
     <CreateDate>2023-09-11</CreateDate>
     <Install>
-        <CSS>
-            <file>
-                <name>general.css</name>
-                <priority>1</priority>
-            </file>
-        </CSS>
-        <!--
-        Mindestens ein Installationsknoten muss im Plugin vorhanden sein
-        @see https://jtl-devguide.readthedocs.io/projects/jtl-shop/de/latest/shop_plugins/infoxml.html
-        -->
+        <Adminmenu>
+            <Settingslink sort="1">
+                <Name>Einstellungen</Name>
+                <!-- Punkte für regelmäßige Anmeldungen -->
+                <Setting type="text" conf="N" sort="99">
+                    <Name>Belohnung für regelmäßige Konto-Anmmeldung</Name>
+                    <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Anmeldungen im Benutzerkonto belohnt werden sollen.</Description>
+                    <ValueName>headerLogin</ValueName>
+                </Setting>
+                <Setting type="checkbox" initialValue="N" conf="Y" sort="100">
+                    <Name>Belohung für regelmäßige Anmeldung aktivieren</Name>
+                    <Description>Ob ein Kunde für eine Anmeldung (nach Ablauf der Zeit seiner letzten Anmeldung) Bonuspunkte erhalten soll</Description>
+                    <ValueName>enableRewardLogin</ValueName>
+                </Setting>
+                <Setting type="number" initialValue="0" conf="Y" sort="101">
+                    <Name>Punkte für regelmäßige Anmeldung</Name>
+                    <Description>Diese Punkte erhält der Kunde für seine Anmeldung in seinem Benutzerkonto.</Description>
+                    <ValueName>rewardPerLogin</ValueName>
+                </Setting>
+                <Setting type="selectbox" initialValue="DAY" conf="Y" sort="102">
+                    <Name>Belohnung für Anmeldung erst nach Interval</Name>
+                    <Description>Für die Vergabe der Punkte muss seit der letzten Vergabe der Punkte die angegebene Zeit verweilt werden.</Description>
+                    <ValueName>rewardPerLoginCooldown</ValueName>
+                    <SelectboxOptions>
+                        <Option sort="1" value="YEAR">Jahr</Option>
+                        <Option sort="2" value="MONTH">Monat</Option>
+                        <Option sort="3" value="WEEK">Woche</Option>
+                        <Option sort="4" value="DAY">Tag</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <!-- Punkte für wiederkehrende Besucher -->
+                <Setting type="text" conf="N" sort="199">
+                    <Name>Belohnung für regelmäßige Besucher</Name>
+                    <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Besuche (sofern der Benutzer angemeldet ist) belohnt werden sollen.</Description>
+                    <ValueName>headerVisit</ValueName>
+                </Setting>
+                <Setting type="checkbox" initialValue="N" conf="Y" sort="200">
+                    <Name>Belohung für regelmäßige Besucher aktivieren</Name>
+                    <Description>Ob ein angemeldeter Kunde für seinen Besuch auf der Seite (nach Ablauf der Zeit für den letzten Besuch) Bonuspunkte erhalten soll</Description>
+                    <ValueName>enableRewardVisit</ValueName>
+                </Setting>
+                <Setting type="number" initialValue="0" conf="Y" sort="201">
+                    <Name>Punkte für regelmäßige Besucher</Name>
+                    <Description>Diese Punkte erhält der Kunde für seinen regelmäßigen Besuch einer beliebigen Shop-Seite (sofern dieser angemeldet ist).</Description>
+                    <ValueName>rewardPerVisit</ValueName>
+                </Setting>
+                <Setting type="selectbox" initialValue="DAY" conf="Y" sort="202">
+                    <Name>Belohnung für Besuch erst nach Interval</Name>
+                    <Description>Für die Vergabe der Punkte muss seit der letzten Vergabe der Punkte die angegebene Zeit verweilt werden.</Description>
+                    <ValueName>rewardPerVisitCooldown</ValueName>
+                    <SelectboxOptions>
+                        <Option sort="1" value="YEAR">Jahr</Option>
+                        <Option sort="2" value="MONTH">Monat</Option>
+                        <Option sort="3" value="WEEK">Woche</Option>
+                        <Option sort="4" value="DAY">Tag</Option>
+                    </SelectboxOptions>
+                </Setting>
+
+                <!-- Punkte für Registration -->
+                <Setting type="text" conf="N" sort="299">
+                    <Name>Belohnung für Registration</Name>
+                    <Description>Hier können Sie Einstellungen treffen, ob Registrationen belohnt werden sollen.</Description>
+                    <ValueName>headerRegistration</ValueName>
+                </Setting>
+                <Setting type="checkbox" initialValue="N" conf="Y" sort="300">
+                    <Name>Belohung für Registration aktivieren</Name>
+                    <Description>Ob ein Kunde für seine Registration auf der Seite Bonuspunkte erhalten soll</Description>
+                    <ValueName>enableRewardRegister</ValueName>
+                </Setting>
+                <Setting type="number" initialValue="10" conf="Y" sort="301">
+                    <Name>Punkte für die Registration</Name>
+                    <Description>Diese Punkte erhält der Kunde für die Eröffnung eines Benutzerkontos.</Description>
+                    <ValueName>rewardPerRegister</ValueName>
+                </Setting>
+
+                <!-- Punkte für Einkäufe -->
+                <Setting type="text" conf="N" sort="399">
+                    <Name>Belohnung für Einkäufe (ohne Funktionsattribut)</Name>
+                    <Description>Hier können Sie Einstellungen treffen, ob Einkäufe belohnt werden sollen.</Description>
+                    <ValueName>headerShopping</ValueName>
+                </Setting>  
+                <Setting type="checkbox" initialValue="Y" conf="Y" sort="400">
+                    <Name>Basispunkte für Euro in Netto</Name>
+                    <Description>Hier kann angegeben werden, ob die Basispunkte bei Geldberechnungen im Nettopreis berechnet werden. Ansonsten werden die Bruttopreise verwendet.</Description>
+                    <ValueName>calculateWithNetPrice</ValueName>
+                </Setting>  
+                <Setting type="number" initialValue="0" conf="Y" sort="401">
+                    <Name>Basispunkte für jeden umgesetzten Euro</Name>
+                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_euro` kein Wert ermittelt werden konnte.</Description>
+                    <ValueName>rewardPerEuro</ValueName>
+                </Setting>
+                <Setting type="number" initialValue="0" conf="Y" sort="402">
+                    <Name>Basispunkte für jeden gekauften Artikel</Name>
+                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_artikel` kein Wert ermittelt werden konnte.</Description>
+                    <ValueName>rewardPerArticle</ValueName>
+                </Setting>
+                <Setting type="number" initialValue="0" conf="Y" sort="403">
+                    <Name>Basispunkte für jeden einmaligen Artikel</Name>
+                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_artikel_einmal` kein Wert ermittelt werden konnte.</Description>
+                    <ValueName>rewardPerArticleOnce</ValueName>
+                </Setting>
+            </Settingslink>
+        </Adminmenu>
     </Install>
 </jtlshopplugin>

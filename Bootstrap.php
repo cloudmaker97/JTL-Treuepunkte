@@ -77,29 +77,35 @@ class Bootstrap extends Bootstrapper
 
     /**
      * Reward the user for a registration
-     * @todo Make rewards configurable
      */
     private function rewardRegister($args)
     {
-        /** @var Customer $currentUser */
-        $currentUser = new Customer($args["customerID"]);
-        $userHistoryEntry = new UserHistoryEntry();
-        $userHistoryEntry->createEntry(0, sprintf("Registration am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
+        $isEnabled = $this->getPluginValue("enableRewardRegister") ?? "N";
+        if ($isEnabled === "Y") {
+            /** @var Customer $currentUser */
+            $currentUser = new Customer($args["customerID"]);
+            $userHistoryEntry = new UserHistoryEntry();
+            $rewardPerRegister = (int) $this->getPluginValue("rewardPerRegister") ?? 0;
+            $userHistoryEntry->createEntry($rewardPerRegister, sprintf("Registration am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
+        }
     }
 
     /**
-     * Reward the user for a visit, if the time since the last login is isSecondsSinceDatePast
-     * @todo Make time and rewards configurable
+     * Reward the user for a visit, if the time since the last login is a while ago
      */
     private function rewardVisit()
     {
-        if(Frontend::getCustomer()->isLoggedIn()) {
+        $isEnabled = $this->getPluginValue("enableRewardVisit") ?? "N";
+        if (Frontend::getCustomer()->isLoggedIn() && $isEnabled === "Y") {
             $currentUser = Frontend::getCustomer();
             $userHistoryEntry = new UserHistoryEntry();
             $lastRewarded = new LastRewarded($currentUser);
-            
-            if($lastRewarded->isSecondsSinceDatePast(LastRewarded::SECONDS_DAY, $lastRewarded->getVisitAt())) {
-                $userHistoryEntry->createEntry(0, sprintf("Wiederholter Besuch: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
+
+            $timeInterval = $this->getPluginValue("rewardPerVisitCooldown") ?? "DAY";
+            $timeIntervalSeconds = $this->getTimeIntervalToSeconds($timeInterval);
+            if ($lastRewarded->isSecondsSinceDatePast($timeIntervalSeconds, $lastRewarded->getVisitAt())) {
+                $rewardPerVisit = (int) $this->getPluginValue("rewardPerVisit") ?? 0;
+                $userHistoryEntry->createEntry($rewardPerVisit, sprintf("Wiederholter Besuch: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
                 $lastRewarded->setVisitAt()->save();
             }
         }
@@ -111,14 +117,19 @@ class Bootstrap extends Bootstrapper
      */
     private function rewardLogin($args)
     {
-        /** @var Customer $currentUser */
-        $currentUser = $args["oKunde"];
-        $userHistoryEntry = new UserHistoryEntry();
-        $lastRewarded = new LastRewarded($currentUser);
-        
-        if($lastRewarded->isSecondsSinceDatePast(LastRewarded::SECONDS_DAY, $lastRewarded->getLoginAt())) {
-            $userHistoryEntry->createEntry(0, sprintf("Login am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
-            $lastRewarded->setLoginAt()->save();
+        $isEnabled = $this->getPluginValue("enableRewardLogin") ?? "N";
+        if ($isEnabled === "Y") {
+            /** @var Customer $currentUser */
+            $currentUser = $args["oKunde"];
+            $userHistoryEntry = new UserHistoryEntry();
+            $lastRewarded = new LastRewarded($currentUser);
+            $timeInterval = $this->getPluginValue("rewardPerLoginCooldown") ?? "DAY";
+            $timeIntervalSeconds = $this->getTimeIntervalToSeconds($timeInterval);
+            if ($lastRewarded->isSecondsSinceDatePast($timeIntervalSeconds, $lastRewarded->getLoginAt())) {
+                $rewardPerLogin = (int) $this->getPluginValue("rewardPerLogin") ?? 0;
+                $userHistoryEntry->createEntry($rewardPerLogin, sprintf("Login am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
+                $lastRewarded->setLoginAt()->save();
+            }
         }
     }
 
@@ -130,17 +141,22 @@ class Bootstrap extends Bootstrapper
     {
         $evaluator = new CartEvaluator();
         // Points per article
+        $pointsPieceSettingPoints = (int) $this->getPluginValue("rewardPerArticle") ?? 0;
         $pointsPiece = new PointsPerArticle();
-        $pointsPiece->setDefaultPoints(0); 
+        $pointsPiece->setDefaultPoints($pointsPieceSettingPoints);
         $evaluator->registerPointType($pointsPiece);
         // Points per article once
+        $pointsOnceSettingPoints = (int) $this->getPluginValue("rewardPerArticleOnce") ?? 0;
         $pointsOnce = new PointsPerArticleOnce();
-        $pointsOnce->setDefaultPoints(0); 
+        $pointsOnce->setDefaultPoints($pointsOnceSettingPoints);
         $evaluator->registerPointType($pointsOnce);
         // Points per euro
+        $pointsPerEuroSettingPoints = (int) $this->getPluginValue("rewardPerEuro") ?? 0;
+        $calculateWithNetPrice = $this->getPluginValue("calculateWithNetPrice") ?? "N";
+        $calculateWithNetPriceBool = $calculateWithNetPrice === "Y";
         $pointsPerEuro = new PointsPerEuro();
-        $pointsPerEuro->setTaxSetting(false); 
-        $pointsPerEuro->setDefaultPoints(0); 
+        $pointsPerEuro->setTaxSetting($calculateWithNetPriceBool);
+        $pointsPerEuro->setDefaultPoints($pointsPerEuroSettingPoints);
         $evaluator->registerPointType($pointsPerEuro);
         // Evaluate the points
         $evaluator->evaluatePoints();
@@ -156,5 +172,35 @@ class Bootstrap extends Bootstrapper
         $orderNumberClean = $currentOrder->cBestellNr;
         $userHistoryEntry = new UserHistoryEntry();
         $userHistoryEntry->createEntry($evaluator->getAllResultPoints(), sprintf("Bestellung ausgeführt: %s (%s)", $orderNumberClean, $orderNumber), $currentUser->kKunde, false, $orderNumber)->save();
+    }
+
+
+    /**
+     * Get the seconds of the given time interval string and after a match
+     * get the corresponding constant from the LastRewarded class
+     */
+    private function getTimeIntervalToSeconds(string $timeIntervalString): int
+    {
+        switch ($timeIntervalString) {
+            case "YEAR":
+                return LastRewarded::SECONDS_YEAR;
+            case "MONTH":
+                return LastRewarded::SECONDS_MONTH;
+            case "WEEK":
+                return LastRewarded::SECONDS_WEEK;
+            case "DAY":
+                return LastRewarded::SECONDS_DAY;
+            default:
+                return LastRewarded::SECONDS_DAY;
+        }
+    }
+
+    /**
+     * Get the plugin setting value of the given setting name
+     * @param string $settingName The name of the setting
+     */
+    private function getPluginValue(string $settingName): mixed
+    {
+        return $this->getPlugin()->getConfig()->getValue($settingName);
     }
 }
