@@ -13,7 +13,7 @@ class UserHistory {
 
     private function loadFromCustomer(Customer $customer) {
         $this->historyEntries = [];
-        $results = Shop::Container()->getDB()->queryPrepared("SELECT * FROM ".UserHistoryEntry::TABLE_NAME." WHERE userId = :kKunde ORDER BY createdAt DESC LIMIT 50", ["kKunde" => $customer->getID()], ReturnType::ARRAY_OF_ASSOC_ARRAYS);
+        $results = Shop::Container()->getDB()->queryPrepared("SELECT * FROM ".UserHistoryEntry::TABLE_NAME." WHERE userId = :kKunde ORDER BY createdAt DESC", ["kKunde" => $customer->getID()], ReturnType::ARRAY_OF_ASSOC_ARRAYS);
         foreach($results as $result) {
             $historyEntry = new UserHistoryEntry();
             $this->historyEntries[] = $historyEntry->fromDatabase($result);

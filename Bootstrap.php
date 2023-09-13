@@ -49,6 +49,21 @@ class Bootstrap extends Bootstrapper
             $this->frontendLink();
         });
 
+        // Hook: Order status change
+        $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BESTELLSTATUS, function($args) {
+            $order = $args['oBestellung'];
+            $orderStatus = $order->cStatus;
+            if($orderStatus == BESTELLUNG_STATUS_BEZAHLT || $orderStatus == BESTELLUNG_STATUS_VERSANDT || $orderStatus == BESTELLUNG_STATUS_TEILVERSANDT  || $orderStatus == BESTELLUNG_STATUS_TEILVERSANDT) {
+                // Add the points to the user
+                UserHistoryEntry::setValuedAtForOrderNow($order->kBestellung);
+            }
+        });
+
+        $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BEARBEITESTORNO, function($args) {
+            $order = $args['oBestellung'];
+            UserHistoryEntry::setValuedAtForOrderNow($order->kBestellung, false);
+        });
+
         // Hook: Cart finalization
         $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLABSCHLUSS_INC_BESTELLUNGINDB_ENDE, function ($args) {
             $this->rewardCart($args);

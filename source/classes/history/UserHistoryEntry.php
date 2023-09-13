@@ -1,6 +1,7 @@
 <?php
 namespace Plugin\dh_bonuspunkte\source\classes\history;
 use DateTime;
+use JTL\DB\ReturnType;
 use JTL\Shop;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
@@ -79,6 +80,30 @@ class UserHistoryEntry {
         return $this;
     }
 
+    public function getOrderId()
+    {
+        return $this->orderId;
+    }
+
+    /**
+     * Set the valuedAt date for the given order id
+     */
+    public static function setValuedAtForOrderNow(int $kBestellung, bool $isValued = true)
+    {
+        if($kBestellung == 0) return;
+        $database = Shop::Container()->getDB();
+        $data = $database->queryPrepared("SELECT * FROM " . self::TABLE_NAME . " WHERE orderId = :orderId", [":orderId" => $kBestellung], ReturnType::SINGLE_ASSOC_ARRAY);
+        if($data == null || count($data) == 0) return;
+        $entry = new UserHistoryEntry();
+        $entry->fromDatabase($data);
+        if($isValued) {
+            $entry->valuedAt = new DateTime();
+        } else {
+            $entry->valuedAt = new DateTime("0000-00-00 00:00:00");
+        }
+        $entry->save();
+    }
+
     /**
      * Create a new entry from the given parameters
      */
@@ -115,18 +140,19 @@ class UserHistoryEntry {
         try {
             $database = Shop::Container()->getDB();
             $insertObject = new \stdClass();
+            if($this->id) {
+                $insertObject->id = $this->id;
+            }
             $insertObject->userId = $this->userId;
             $insertObject->orderId = $this->orderId;
             $insertObject->text = $this->text;
             $insertObject->points = $this->points;
             $insertObject->createdAt = $this->createdAt->format("Y-m-d H:i:s");
             $insertObject->valuedAt = $this->valuedAt == null ? null : $this->valuedAt->format("Y-m-d H:i:s");
-            $this->id = $database->insert(self::TABLE_NAME, $insertObject);
+            $this->id = $database->upsert(self::TABLE_NAME, $insertObject);
             DebugManager::addMessage(new DebugMessage("Neuer Punkte-Eintrag wurde gespeichert.", [
                 "id" => $this->id
             ]));
-            var_dump($insertObject->valuedAt);
-
         } catch(\Exception $e) {
             DebugManager::addMessage(new DebugMessage("Punkte-Eintrag konnte nicht gespeichert werden, unbekannter Fehler.", []));
         }

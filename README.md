@@ -27,7 +27,7 @@ Für jedes der hier aufgelisteten Attribute muss nun den kleinen Pfeil geklickt 
 
 Diese Funktionsattribute können Sie dann bei den Artikeln in der Warenwirtschaft (in einem bestimmten Artikel) unter dem Reiter "Attribute/Merkmale" eintragen. Die Punkte werden dann automatisch dem Kundenkonto gutgeschrieben, sobald der Status der Bestellung auf "Bezahlt” gesetzt wird.
 
-Sollte eine Bestellung storniert werden, z.B. durch geltendmachung des Widerrufsrechts, so ist noch keine Logik implementiert, um die Punkte wieder abzuziehen. Letztendlich ist es aber auch eine Frage inwiefern das umgesetzt werden soll, denn während der Gutschrift der Punkte kann ein Kunde diese bereits für eine anderweitige Prämie eingelöst haben. Haben Sie hierzu eine Idee, so können Sie diese gerne mit mir teilen.
+Sollte eine Bestellung storniert werden, z.B. durch geltendmachung des Widerrufsrechts, so werden die Punkte wieder abgezogen. Für bereits eingelöste Prämien kann jedoch keine Rückabwicklung erfolgen. Haben Sie hierzu eine Idee, so können Sie diese gerne mit mir teilen.
 
 ### Plugin konfigurieren
 
@@ -40,7 +40,7 @@ In den Einstellungen des Plugins können Sie die Bonuspunkte für die verschiede
 Punkte erhält der Kunde für jeden Einkauf, wenn die Bedingungen erfüllt werden. Die Bedingungen können in den Plugin-Einstellungen konfiguriert werden. Es können entweder
 für alle Einkäufe Punkte vergeben werden oder nur für bestimmte Artikel oder Bedingungen (z.B. Einkaufswert in Euro, Anzahl der Artikel oder pro einmaligen Artikel im Warenkorb). Die Punkte werden dem Kundenkonto gutgeschrieben, sobald der Status der Bestellung auf "Bezahlt” gesetzt wird.
 
-Sollte eine Bestellung storniert werden, so ist in dem Plugin noch keine Logik implementiert, um die Punkte wieder abzuziehen. Letztendlich ist es aber auch eine Frage inwiefern das ein Unternehmen handhaben will, denn während der Gutschrift der Punkte kann ein Kunde diese bereits für eine Prämie eingelöst haben. Haben Sie hierzu eine Idee, so können Sie diese gerne mit mir teilen.
+Sollte eine Bestellung storniert werden, z.B. durch geltendmachung des Widerrufsrechts, so werden die Punkte wieder abgezogen. Für bereits eingelöste Prämien kann jedoch keine Rückabwicklung erfolgen. Haben Sie hierzu eine Idee, so können Sie diese gerne mit mir teilen.
 
 ### Registrierung
 
