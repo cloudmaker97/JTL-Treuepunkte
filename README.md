@@ -40,7 +40,7 @@ In den Einstellungen des Plugins können Sie die Bonuspunkte für die verschiede
 Punkte erhält der Kunde für jeden Einkauf, wenn die Bedingungen erfüllt werden. Die Bedingungen können in den Plugin-Einstellungen konfiguriert werden. Es können entweder
 für alle Einkäufe Punkte vergeben werden oder nur für bestimmte Artikel oder Bedingungen (z.B. Einkaufswert in Euro, Anzahl der Artikel oder pro einmaligen Artikel im Warenkorb). Die Punkte werden dem Kundenkonto gutgeschrieben, sobald der Status der Bestellung auf "Bezahlt” gesetzt wird.
 
-Sollte eine Bestellung storniert werden, z.B. durch geltendmachung des Widerrufsrechts, so werden die Punkte wieder abgezogen. Für bereits eingelöste Prämien kann jedoch keine Rückabwicklung erfolgen. Haben Sie hierzu eine Idee, so können Sie diese gerne mit mir teilen.
+Sollte eine Bestellung in der Warenwirtschaft storniert wurde, z.B. durch geltendmachung des Widerrufsrechts, so werden die Punkte wieder abgezogen. Für bereits eingelöste Prämien kann jedoch keine Rückabwicklung erfolgen. Haben Sie hierzu eine Idee, so können Sie diese gerne mit mir teilen.
 
 ### Registrierung
 
@@ -57,7 +57,7 @@ da nur so die Punkte eindeutig einem Kunden zugeordnet werden können.
 
 ### Menüpunkt für Kunden
 
-Im Shop wird im Dropdown im Header ein neuer Menüpunkt angezeigt, welcher den Kunden zu der Bonuspunkte-Übersicht weiterleitet. Dort kann der Kunde sehen, wie viele Punkte er bereits gesammelt hat und wie sich diese zusammensetzen.
+Im Shop wird im Dropdown im Header ein neuer Menüpunkt angezeigt, welcher den Kunden zu der Bonuspunkte-Übersicht weiterleitet. Dort kann der Kunde sehen, wie viele Punkte er bereits gesammelt hat und wie sich diese zusammensetzen. 
 
 ### Frontend-Link und Bearbeitung
 

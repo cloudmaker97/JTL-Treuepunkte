@@ -1,6 +1,7 @@
 <?php
 namespace Plugin\dh_bonuspunkte\source\classes\history;
 use DateTime;
+use Exception;
 use JTL\DB\ReturnType;
 use JTL\Shop;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
@@ -21,12 +22,12 @@ class UserHistoryEntry {
     // The amount of points that were added to the account
     private int $points;
     // The date when the points were added to the account
-    private DateTime $createdAt;
+    private ?DateTime $createdAt;
     // The date when the points were valued (e.g. when the order was completed)
     private ?DateTime $valuedAt;
 
     /**
-     * It is valued if the dates are set and it's valued after it was created
+     * It is valued if the dates are set, and it's valued after it was created
      */
     public function isValued(): bool {
         if($this->valuedAt == null || $this->createdAt == null) {
@@ -42,31 +43,43 @@ class UserHistoryEntry {
         return $this->points;
     }
 
-    public function getText()
+    /**
+     * Get the text for this history entry
+     * @return string
+     */
+    public function getText(): string
     {
         return $this->text;
     }
 
-    public function getCreatedAt(): DateTime
+    /**
+     * @return DateTime|null
+     * @noinspection PhpUnused Is used in the template
+     */
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
+    /**
+     * @return DateTime|null
+     * @noinspection PhpUnused Is used in the template
+     */
     public function getValuedAt(): ?DateTime
     {
         return $this->valuedAt;
     }
 
     /**
-     * Get the points that were accounted
+     * Get the id of this entry
      */
     public function getId(): int {
         return $this->id;
     }
 
-
     /**
      * Load the entry from the database array and return the object
+     * @noinspection PhpUnhandledExceptionInspection
      */
     public function fromDatabase(array $data): self
     {
@@ -80,7 +93,12 @@ class UserHistoryEntry {
         return $this;
     }
 
-    public function getOrderId()
+    /**
+     * Get the order id if the entry is related to an order
+     * @return int|null
+     * @noinspection PhpUnused
+     */
+    public function getOrderId(): ?int
     {
         return $this->orderId;
     }
@@ -88,7 +106,7 @@ class UserHistoryEntry {
     /**
      * Set the valuedAt date for the given order id
      */
-    public static function setValuedAtForOrderNow(int $kBestellung, bool $isValued = true)
+    public static function setValuedAtForOrderNow(int $kBestellung, bool $isValued = true): void
     {
         if($kBestellung == 0) return;
         $database = Shop::Container()->getDB();
@@ -147,13 +165,13 @@ class UserHistoryEntry {
             $insertObject->orderId = $this->orderId;
             $insertObject->text = $this->text;
             $insertObject->points = $this->points;
-            $insertObject->createdAt = $this->createdAt->format("Y-m-d H:i:s");
-            $insertObject->valuedAt = $this->valuedAt == null ? null : $this->valuedAt->format("Y-m-d H:i:s");
+            $insertObject->createdAt = $this->createdAt?->format("Y-m-d H:i:s");
+            $insertObject->valuedAt = $this->valuedAt?->format("Y-m-d H:i:s");
             $this->id = $database->upsert(self::TABLE_NAME, $insertObject);
             DebugManager::addMessage(new DebugMessage("Neuer Punkte-Eintrag wurde gespeichert.", [
                 "id" => $this->id
             ]));
-        } catch(\Exception $e) {
+        } catch(Exception) {
             DebugManager::addMessage(new DebugMessage("Punkte-Eintrag konnte nicht gespeichert werden, unbekannter Fehler.", []));
         }
     }

@@ -13,14 +13,14 @@ class CartEvaluator {
      * This array contains all registered point classes for evaulation
      * @var IPoint[]
      */
-    private $pointClasses = [];
+    private array $pointClasses = [];
 
     /**
      * This array contains all results of the evaluation. Each point type
      * has its own result object for storing the amount of points.
      * @var PointResult[]
      */
-    private $pointResults = [];
+    private array $pointResults = [];
 
     /**
      * Iterate over all registered point types and evaluate the points
@@ -45,8 +45,7 @@ class CartEvaluator {
      */
     private function getCartPositions(): array {
         $cart = Frontend::getCart();
-        $cartPositions = $cart->PositionenArr;
-        return $cartPositions;
+        return $cart->PositionenArr;
     }
 
     /**

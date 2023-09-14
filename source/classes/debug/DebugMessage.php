@@ -8,7 +8,7 @@ use Plugin\dh_bonuspunkte\source\interfaces\debug\IDebugMessage;
  */
 class DebugMessage implements IDebugMessage {
     private string $message;
-    private array $data = [];
+    private array $data;
 
     /**
      * @inheritDoc

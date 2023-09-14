@@ -2,9 +2,11 @@
 namespace Plugin\dh_bonuspunkte\source\classes\history;
 
 use DateTime;
+use Exception;
 use JTL\Customer\Customer;
 use JTL\DB\ReturnType;
 use JTL\Shop;
+use stdClass;
 
 class LastRewarded
 {
@@ -41,9 +43,11 @@ class LastRewarded
      * Load the object from the database for the given customer
      * If the customer does not exist, create a new entry
      */
-    private function loadCustomer(Customer $customer): self
+    private function loadCustomer(Customer $customer): void
     {
-        if ($customer->kKunde == null || $customer->kKunde <= 0) return $this;
+        if ($customer->kKunde == null || $customer->kKunde <= 0) {
+            return;
+        }
         $database = Shop::Container()->getDB();
         $databaseResult = $database->queryPrepared("SELECT * FROM ".self::TABLE_NAME." WHERE userId = :kKunde", ["kKunde" => $customer->kKunde], ReturnType::ARRAY_OF_ASSOC_ARRAYS);
         if ($databaseResult) {
@@ -51,14 +55,14 @@ class LastRewarded
         } else {
             $this->createEntryForCustomer($customer);
         }
-
-        return $this;
     }
 
     /**
      * Load the object attributes from the database result
+     * @noinspection PhpUnhandledExceptionInspection
      */
-    private function loadFromDatabase(array $databaseResult) {
+    private function loadFromDatabase(array $databaseResult): void
+    {
         $firstData = $databaseResult[0];
         $this->id = $firstData["id"];
         $this->customerId = $firstData["userId"];
@@ -70,7 +74,7 @@ class LastRewarded
      * Create the entry in the database for the given customer if it does not exist
      * and fills this object with the data
      */
-    private function createEntryForCustomer(Customer $customer)
+    private function createEntryForCustomer(Customer $customer): void
     {
         $database = Shop::Container()->getDB();
         // Update the object
@@ -78,7 +82,7 @@ class LastRewarded
         $this->loginAt = null;
         $this->visitAt = null;
         // Create the entry in the database
-        $insertObj = new \stdClass();
+        $insertObj = new stdClass();
         $insertObj->userId = $this->customerId;
         $insertObj->loginAt = $this->loginAt;
         $insertObj->visitAt = $this->visitAt;
@@ -137,7 +141,7 @@ class LastRewarded
      */
     public function save(): void
     {
-        $updateObj = new \stdClass();
+        $updateObj = new stdClass();
         if ($this->loginAt != null) {
             $updateObj->loginAt = $this->loginAt->format("Y-m-d H:i:s");
         }

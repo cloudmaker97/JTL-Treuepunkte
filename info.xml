@@ -132,6 +132,28 @@
                     <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_artikel_einmal` kein Wert ermittelt werden konnte.</Description>
                     <ValueName>rewardPerArticleOnce</ValueName>
                 </Setting>
+
+                <!-- Punkte in Guthaben -->
+                <Setting type="text" conf="N" sort="499">
+                    <Name>Umwandlung von Punkten in Guthaben</Name>
+                    <Description>Hier können Sie Einstellungen treffen, ob Punkte in Guthaben umgewandelt werden können belohnt werden sollen.</Description>
+                    <ValueName>headerConversion</ValueName>
+                </Setting>
+                <Setting type="number" conf="Y" sort="500" initialValue="0,01">
+                    <Name>Punkte in Euro</Name>
+                    <Description>Hier geben Sie an, wie viele Punkte einem Echtgeld-Betrag entsprechen</Description>
+                    <ValueName>conversionToEuroEachPoint</ValueName>
+                </Setting>
+                <Setting type="text" conf="Y" sort="501" initialValue="0,01">
+                    <Name>Punktewert in Euro</Name>
+                    <Description>Hier geben Sie an, wie viel Wert ein Punkt in einem Echtgeld-Betrag entspricht</Description>
+                    <ValueName>conversionToEuroEachPoint</ValueName>
+                </Setting>
+                <Setting type="number" conf="Y" sort="501" initialValue="0,01">
+                    <Name>Mindestanzahl in Punkten</Name>
+                    <Description>Hier geben Sie an, wie viele Punkte einem Echtgeld-Betrag entsprechen</Description>
+                    <ValueName>conversionToEuroEachPoint</ValueName>
+                </Setting>
             </Settingslink>
         </Adminmenu>
     </Install>

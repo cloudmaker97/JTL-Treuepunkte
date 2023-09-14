@@ -28,11 +28,12 @@ class PointsPerArticle implements IPoint {
 	public static function getName(): string {
         return "Bonuspunkte pro Artikel";
 	}
-	
+
     /**
-	 * @inheritDoc
-	 */
-	public static function getFunctionAttributName(): string {
+     * Get the functional attribute name
+     * @return string
+     */
+    public static function getFunctionAttributName(): string {
         return "bonuspunkte_pro_artikel";
 	}
 	

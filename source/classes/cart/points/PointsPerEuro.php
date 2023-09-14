@@ -42,11 +42,12 @@ class PointsPerEuro implements IPoint {
 	public static function getName(): string {
         return "Bonuspunkte pro Euro";
 	}
-	
+
     /**
-	 * @inheritDoc
-	 */
-	public static function getFunctionAttributName(): string {
+     * Get the functional attribute name
+     * @return string
+     */
+    public static function getFunctionAttributName(): string {
         return "bonuspunkte_pro_euro";
 	}
 	
@@ -58,11 +59,9 @@ class PointsPerEuro implements IPoint {
 		$price = $data->fVK[$this->isNetPrice];
 		$allArticlePrice = round($price * $data->nAnzahl);
 		if(isset($data->Artikel->FunktionsAttribute[self::getFunctionAttributName()])) {
-			$pointsFromEuro = $allArticlePrice * $data->Artikel->FunktionsAttribute[self::getFunctionAttributName()];
-			return $pointsFromEuro;
+            return $allArticlePrice * $data->Artikel->FunktionsAttribute[self::getFunctionAttributName()];
 		} else {
-			$pointsFromDefault = $allArticlePrice * $this->defaultPoints;
-			return $pointsFromDefault;
+            return $allArticlePrice * $this->defaultPoints;
 		}
 	}
 }

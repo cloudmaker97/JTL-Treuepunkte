@@ -6,6 +6,8 @@
 
 namespace Plugin\dh_bonuspunkte;
 
+use Exception;
+use JTL\Checkout\Bestellung;
 use JTL\Customer\Customer;
 use JTL\Events\Dispatcher;
 use JTL\Plugin\Bootstrapper;
@@ -36,24 +38,32 @@ class Bootstrap extends Bootstrapper
     /**
      * @inheritDoc
      */
-    public function boot(Dispatcher $dispatcher)
+    public function boot(Dispatcher $dispatcher): void
     {
         $this->dispatcher = $dispatcher;
         $this->dispatcherListeners();
     }
 
-    private function dispatcherListeners()
+    /**
+     * Register the event listeners for the plugin, 
+     * so that the plugin can react to the events of the shop
+     */
+    private function dispatcherListeners(): void
     {
-        // Hook: Page in the frontend
+        // Hook: Page in the frontend is loaded
         $this->dispatcher->listen('shop.hook.' . HOOK_SEITE_PAGE, function() {
-            $this->frontendLink();
+            // Inject the webpack script inline to the head of the page
+            $this->dispatcher->listen('shop.hook.' . HOOK_SMARTY_OUTPUTFILTER, function() {
+                $this->injectWebpackScriptInline();
+            });
+            $this->pageFrontendLink();
         });
 
         // Hook: Order status change
         $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BESTELLSTATUS, function($args) {
             $order = $args['oBestellung'];
             $orderStatus = $order->cStatus;
-            if($orderStatus == BESTELLUNG_STATUS_BEZAHLT || $orderStatus == BESTELLUNG_STATUS_VERSANDT || $orderStatus == BESTELLUNG_STATUS_TEILVERSANDT  || $orderStatus == BESTELLUNG_STATUS_TEILVERSANDT) {
+            if($orderStatus == BESTELLUNG_STATUS_BEZAHLT || $orderStatus == BESTELLUNG_STATUS_VERSANDT || $orderStatus == BESTELLUNG_STATUS_TEILVERSANDT) {
                 // Add the points to the user
                 UserHistoryEntry::setValuedAtForOrderNow($order->kBestellung);
             }
@@ -89,6 +99,7 @@ class Bootstrap extends Bootstrapper
     /**
      * Add the debug messages to the DOM before the smarty template is rendered,
      * because the PHPQuery DOM is not available anymore after the smarty template is rendered
+     * @throws Exception
      */
     private function includeDebugMessagesToDOM(): void
     {
@@ -98,13 +109,23 @@ class Bootstrap extends Bootstrapper
     }
 
     /**
+     * Inject the webpack script inline to the head of the page,
+     * otherwise the Shop will always load the script from the plugin, even if the script is not used
+     * This is a workaround to optimize / maintain the performance of the shop
+     * @throws Exception
+     */
+    private function injectWebpackScriptInline(): void {
+        $scriptElement = sprintf("<script>%s</script>", file_get_contents(__DIR__ . "/frontend/js/main.js"));
+        pq("head")->append($scriptElement);
+    }
+
+    /**
      * Reward the user for a registration
      */
     private function rewardRegister($args): void
     {
         $isEnabled = $this->getPluginValue("enableRewardRegister") ?? "off";
         if ($isEnabled === "on") {
-            /** @var Customer $currentUser */
             $currentUser = new Customer($args["customerID"]);
             $userHistoryEntry = new UserHistoryEntry();
             $rewardPerRegister = (int) $this->getPluginValue("rewardPerRegister") ?? 0;
@@ -134,9 +155,9 @@ class Bootstrap extends Bootstrapper
     }
 
     /**
-     * Add the history to the smarty variabless
+     * Add the history to the smarty variables
      */
-    private function frontendLink(): void {
+    private function pageFrontendLink(): void {
         if(Frontend::getCustomer()->isLoggedIn()) {
             $history = new UserHistory(Frontend::getCustomer());
             Shop::Smarty()->assign("dh_bonuspunkte_history", $history);
@@ -195,7 +216,7 @@ class Bootstrap extends Bootstrapper
             "data" => $evaluator->getAllResultObjects(),
         ]));
 
-        /** @var \JTL\Checkout\Bestellung  */
+        /** @var Bestellung $args */
         $currentOrder = $args["oBestellung"];
         $currentUser = Frontend::getCustomer();
         $orderNumber = $currentOrder->kBestellung;
@@ -211,18 +232,12 @@ class Bootstrap extends Bootstrapper
      */
     private function getTimeIntervalToSeconds(string $timeIntervalString): int
     {
-        switch ($timeIntervalString) {
-            case "YEAR":
-                return LastRewarded::SECONDS_YEAR;
-            case "MONTH":
-                return LastRewarded::SECONDS_MONTH;
-            case "WEEK":
-                return LastRewarded::SECONDS_WEEK;
-            case "DAY":
-                return LastRewarded::SECONDS_DAY;
-            default:
-                return LastRewarded::SECONDS_DAY;
-        }
+        return match ($timeIntervalString) {
+            "YEAR" => LastRewarded::SECONDS_YEAR,
+            "MONTH" => LastRewarded::SECONDS_MONTH,
+            "WEEK" => LastRewarded::SECONDS_WEEK,
+            default => LastRewarded::SECONDS_DAY,
+        };
     }
 
     /**

@@ -36,20 +36,4 @@ class PointResult {
     {
         return $this->pointAmount;
     }
-
-    /**
-     * Add points to this result
-     */
-    public function addPoints(int $amount): void
-    {
-        $this->pointAmount += $amount;
-    }
-
-    /**
-     * Remove points from this result
-     */
-    public function removePoints(int $amount): void
-    {
-        $this->pointAmount -= $amount;
-    }
 }
