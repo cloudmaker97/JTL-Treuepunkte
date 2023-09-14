@@ -7,7 +7,7 @@
     <PluginID>dh_bonuspunkte</PluginID>
     <XMLVersion>100</XMLVersion>
     <Icon></Icon>
-    <Version>1.0.8</Version>
+    <Version>1.0.11</Version>
     <ShopVersion>5.0.0</ShopVersion>
     <CreateDate>2023-09-11</CreateDate>
     <Install>
@@ -36,22 +36,29 @@
                 <!-- Punkte für regelmäßige Anmeldungen -->
                 <Setting type="text" conf="N" sort="99">
                     <Name>Belohnung für regelmäßige Konto-Anmmeldung</Name>
-                    <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Anmeldungen im Benutzerkonto belohnt werden sollen.</Description>
+                    <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Anmeldungen im Benutzerkonto
+                        belohnt werden sollen.
+                    </Description>
                     <ValueName>headerLogin</ValueName>
                 </Setting>
                 <Setting type="checkbox" initialValue="off" conf="Y" sort="100">
                     <Name>Belohung für regelmäßige Anmeldung aktivieren</Name>
-                    <Description>Ob ein Kunde für eine Anmeldung (nach Ablauf der Zeit seiner letzten Anmeldung) Bonuspunkte erhalten soll</Description>
+                    <Description>Ob ein Kunde für eine Anmeldung (nach Ablauf der Zeit seiner letzten Anmeldung)
+                        Bonuspunkte erhalten soll
+                    </Description>
                     <ValueName>enableRewardLogin</ValueName>
                 </Setting>
                 <Setting type="number" initialValue="0" conf="Y" sort="101">
                     <Name>Punkte für regelmäßige Anmeldung</Name>
-                    <Description>Diese Punkte erhält der Kunde für seine Anmeldung in seinem Benutzerkonto.</Description>
+                    <Description>Diese Punkte erhält der Kunde für seine Anmeldung in seinem Benutzerkonto.
+                    </Description>
                     <ValueName>rewardPerLogin</ValueName>
                 </Setting>
                 <Setting type="selectbox" initialValue="DAY" conf="Y" sort="102">
                     <Name>Belohnung für Anmeldung erst nach Interval</Name>
-                    <Description>Für die Vergabe der Punkte muss seit der letzten Vergabe der Punkte die angegebene Zeit verweilt werden.</Description>
+                    <Description>Für die Vergabe der Punkte muss seit der letzten Vergabe der Punkte die angegebene Zeit
+                        verweilt werden.
+                    </Description>
                     <ValueName>rewardPerLoginCooldown</ValueName>
                     <SelectboxOptions>
                         <Option sort="1" value="YEAR">Jahr</Option>
@@ -64,22 +71,30 @@
                 <!-- Punkte für wiederkehrende Besucher -->
                 <Setting type="text" conf="N" sort="199">
                     <Name>Belohnung für regelmäßige Besucher</Name>
-                    <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Besuche (sofern der Benutzer angemeldet ist) belohnt werden sollen.</Description>
+                    <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Besuche (sofern der Benutzer
+                        angemeldet ist) belohnt werden sollen.
+                    </Description>
                     <ValueName>headerVisit</ValueName>
                 </Setting>
                 <Setting type="checkbox" initialValue="off" conf="Y" sort="200">
                     <Name>Belohung für regelmäßige Besucher aktivieren</Name>
-                    <Description>Ob ein angemeldeter Kunde für seinen Besuch auf der Seite (nach Ablauf der Zeit für den letzten Besuch) Bonuspunkte erhalten soll</Description>
+                    <Description>Ob ein angemeldeter Kunde für seinen Besuch auf der Seite (nach Ablauf der Zeit für den
+                        letzten Besuch) Bonuspunkte erhalten soll
+                    </Description>
                     <ValueName>enableRewardVisit</ValueName>
                 </Setting>
                 <Setting type="number" initialValue="0" conf="Y" sort="201">
                     <Name>Punkte für regelmäßige Besucher</Name>
-                    <Description>Diese Punkte erhält der Kunde für seinen regelmäßigen Besuch einer beliebigen Shop-Seite (sofern dieser angemeldet ist).</Description>
+                    <Description>Diese Punkte erhält der Kunde für seinen regelmäßigen Besuch einer beliebigen
+                        Shop-Seite (sofern dieser angemeldet ist).
+                    </Description>
                     <ValueName>rewardPerVisit</ValueName>
                 </Setting>
                 <Setting type="selectbox" initialValue="DAY" conf="Y" sort="202">
                     <Name>Belohnung für Besuch erst nach Interval</Name>
-                    <Description>Für die Vergabe der Punkte muss seit der letzten Vergabe der Punkte die angegebene Zeit verweilt werden.</Description>
+                    <Description>Für die Vergabe der Punkte muss seit der letzten Vergabe der Punkte die angegebene Zeit
+                        verweilt werden.
+                    </Description>
                     <ValueName>rewardPerVisitCooldown</ValueName>
                     <SelectboxOptions>
                         <Option sort="1" value="YEAR">Jahr</Option>
@@ -92,12 +107,14 @@
                 <!-- Punkte für Registration -->
                 <Setting type="text" conf="N" sort="299">
                     <Name>Belohnung für Registration</Name>
-                    <Description>Hier können Sie Einstellungen treffen, ob Registrationen belohnt werden sollen.</Description>
+                    <Description>Hier können Sie Einstellungen treffen, ob Registrationen belohnt werden sollen.
+                    </Description>
                     <ValueName>headerRegistration</ValueName>
                 </Setting>
                 <Setting type="checkbox" initialValue="off" conf="Y" sort="300">
                     <Name>Belohung für Registration aktivieren</Name>
-                    <Description>Ob ein Kunde für seine Registration auf der Seite Bonuspunkte erhalten soll</Description>
+                    <Description>Ob ein Kunde für seine Registration auf der Seite Bonuspunkte erhalten soll
+                    </Description>
                     <ValueName>enableRewardRegister</ValueName>
                 </Setting>
                 <Setting type="number" initialValue="10" conf="Y" sort="301">
@@ -111,48 +128,77 @@
                     <Name>Belohnung für Einkäufe (ohne Funktionsattribut)</Name>
                     <Description>Hier können Sie Einstellungen treffen, ob Einkäufe belohnt werden sollen.</Description>
                     <ValueName>headerShopping</ValueName>
-                </Setting>  
+                </Setting>
                 <Setting type="checkbox" initialValue="on" conf="Y" sort="400">
                     <Name>Berechnungen der Artikelpreise in Netto</Name>
-                    <Description>Hier kann angegeben werden, ob die Basispunkte bei Geldberechnungen im Nettopreis berechnet werden. Ansonsten werden die Bruttopreise verwendet.</Description>
+                    <Description>Hier kann angegeben werden, ob die Basispunkte bei Geldberechnungen im Nettopreis
+                        berechnet werden. Ansonsten werden die Bruttopreise verwendet.
+                    </Description>
                     <ValueName>calculateWithNetPrice</ValueName>
-                </Setting>  
+                </Setting>
                 <Setting type="number" initialValue="0" conf="Y" sort="401">
                     <Name>Basispunkte für jeden umgesetzten Euro</Name>
-                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_euro` kein Wert ermittelt werden konnte.</Description>
+                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_euro`
+                        kein Wert ermittelt werden konnte.
+                    </Description>
                     <ValueName>rewardPerEuro</ValueName>
                 </Setting>
                 <Setting type="number" initialValue="0" conf="Y" sort="402">
                     <Name>Basispunkte für jeden gekauften Artikel</Name>
-                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_artikel` kein Wert ermittelt werden konnte.</Description>
+                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut
+                        `bonuspunkte_pro_artikel` kein Wert ermittelt werden konnte.
+                    </Description>
                     <ValueName>rewardPerArticle</ValueName>
                 </Setting>
                 <Setting type="number" initialValue="0" conf="Y" sort="403">
                     <Name>Basispunkte für jeden einmaligen Artikel</Name>
-                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut `bonuspunkte_pro_artikel_einmal` kein Wert ermittelt werden konnte.</Description>
+                    <Description>Automatische Punktevergabe, sofern durch das Funktionsattribut
+                        `bonuspunkte_pro_artikel_einmal` kein Wert ermittelt werden konnte.
+                    </Description>
                     <ValueName>rewardPerArticleOnce</ValueName>
                 </Setting>
 
                 <!-- Punkte in Guthaben -->
                 <Setting type="text" conf="N" sort="499">
                     <Name>Umwandlung von Punkten in Guthaben</Name>
-                    <Description>Hier können Sie Einstellungen treffen, ob Punkte in Guthaben umgewandelt werden können belohnt werden sollen.</Description>
+                    <Description>Hier können Sie Einstellungen treffen, ob Punkte in Guthaben umgewandelt werden können
+                        belohnt werden sollen.
+                    </Description>
                     <ValueName>headerConversion</ValueName>
                 </Setting>
-                <Setting type="number" conf="Y" sort="500" initialValue="0,01">
-                    <Name>Punkte in Euro</Name>
-                    <Description>Hier geben Sie an, wie viele Punkte einem Echtgeld-Betrag entsprechen</Description>
+                <Setting type="checkbox" conf="Y" sort="500" initialValue="off">
+                    <Name>Umwandlung von Punkten in Guthaben</Name>
+                    <Description>Hier können Sie die Umwandlung von Punkten in Guthaben erlauben.</Description>
+                    <ValueName>conversionToEuroEnabled</ValueName>
+                </Setting>
+                <Setting type="number" conf="Y" sort="501" initialValue="100">
+                    <Name>Punkte für einen Euro</Name>
+                    <Description>Hier geben Sie an, wie viele Punkte einem Euro entsprechen</Description>
                     <ValueName>conversionToEuroEachPoint</ValueName>
                 </Setting>
-                <Setting type="text" conf="Y" sort="501" initialValue="0,01">
-                    <Name>Punktewert in Euro</Name>
-                    <Description>Hier geben Sie an, wie viel Wert ein Punkt in einem Echtgeld-Betrag entspricht</Description>
-                    <ValueName>conversionToEuroEachPoint</ValueName>
-                </Setting>
-                <Setting type="number" conf="Y" sort="501" initialValue="0,01">
+                <Setting type="number" conf="Y" sort="502" initialValue="1000">
                     <Name>Mindestanzahl in Punkten</Name>
-                    <Description>Hier geben Sie an, wie viele Punkte einem Echtgeld-Betrag entsprechen</Description>
-                    <ValueName>conversionToEuroEachPoint</ValueName>
+                    <Description>Hier geben Sie an, wie viele Punkte mindestens gesammelt werden müssen um eingelöst
+                        werden zu können.
+                    </Description>
+                    <ValueName>conversionMinimumPointAmount</ValueName>
+                </Setting>
+
+                <!-- Bedingungen zur Freigabe der Punkte -->
+                <Setting type="text" conf="N" sort="599">
+                    <Name>Freigabe von Punkten</Name>
+                    <Description>Hier können Sie Einstellungen treffen, ab wann Punkte gutgeschrieben werden. Als
+                        Voraussetzung muss die Bestellung als bezahlt markiert werden, z.B. durch Zahlungseingang.
+                    </Description>
+                    <ValueName>headerApplyPointRestrictions</ValueName>
+                </Setting>
+                <Setting type="number" conf="Y" sort="600" initialValue="15" min="0">
+                    <Name>Mindestanzahl von Tagen bis Gutschrift</Name>
+                    <Description>Hier können Sie Einstellungen treffen, ab wie vielen Tagen nach der Bestellung die
+                        Punkte gutgeschrieben werden. Als Voraussetzung muss die Bestellung als bezahlt markiert werden,
+                        z.B. durch Zahlungseingang. Soll die Gutschrift sofort erfolgen, so tragen Sie eine 0 ein.
+                    </Description>
+                    <ValueName>rewardAfterThisDays</ValueName>
                 </Setting>
             </Settingslink>
         </Adminmenu>

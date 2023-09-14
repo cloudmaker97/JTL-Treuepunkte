@@ -1,11 +1,14 @@
 <?php
 namespace Plugin\dh_bonuspunkte\source\classes\history;
+use DateInterval;
 use DateTime;
 use Exception;
 use JTL\DB\ReturnType;
+use JTL\Helpers\Date;
 use JTL\Shop;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
+use Plugin\dh_bonuspunkte\source\classes\helper\PluginSettingsAccessor;
 
 class UserHistoryEntry {
     // The name of the table in the database
@@ -33,7 +36,8 @@ class UserHistoryEntry {
         if($this->valuedAt == null || $this->createdAt == null) {
             return false;
         }
-        return $this->createdAt <= $this->valuedAt;
+
+        return $this->isMinimumUnlockInDaysFulfilled();
     }
 
     /**
@@ -173,6 +177,27 @@ class UserHistoryEntry {
             ]));
         } catch(Exception) {
             DebugManager::addMessage(new DebugMessage("Punkte-Eintrag konnte nicht gespeichert werden, unbekannter Fehler.", []));
+        }
+    }
+
+    /**
+     * Check if the requirement for unlocking the points after a certain amount of days
+     * @return bool
+     */
+    public function isMinimumUnlockInDaysFulfilled(): bool
+    {
+        $unlockInDays = PluginSettingsAccessor::getRewardUnlockAfterDays();
+        if ($unlockInDays > 0) {
+            $currentDateTime = new DateTime();
+            try {
+                $createdAtClone = (new DateTime($this->getCreatedAt()->format(DATE_ATOM)));
+                $createdAtClone->modify(sprintf("+%d day", $unlockInDays));
+                return $createdAtClone < $currentDateTime;
+            } catch (Exception) {
+                return false;
+            }
+        } else {
+            return true;
         }
     }
 }

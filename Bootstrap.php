@@ -19,6 +19,7 @@ use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticleOnce;
 use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerEuro;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
+use Plugin\dh_bonuspunkte\source\classes\helper\PluginSettingsAccessor;
 use Plugin\dh_bonuspunkte\source\classes\history\LastRewarded;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistory;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistoryEntry;
@@ -40,6 +41,9 @@ class Bootstrap extends Bootstrapper
      */
     public function boot(Dispatcher $dispatcher): void
     {
+        global $pluginInterfaceForDhBonuspoints;
+        $pluginInterfaceForDhBonuspoints = $this->getPlugin();
+
         $this->dispatcher = $dispatcher;
         $this->dispatcherListeners();
     }
@@ -124,11 +128,10 @@ class Bootstrap extends Bootstrapper
      */
     private function rewardRegister($args): void
     {
-        $isEnabled = $this->getPluginValue("enableRewardRegister") ?? "off";
-        if ($isEnabled === "on") {
+        if (PluginSettingsAccessor::getRewardPerRegistrationIsEnabled()) {
             $currentUser = new Customer($args["customerID"]);
             $userHistoryEntry = new UserHistoryEntry();
-            $rewardPerRegister = (int) $this->getPluginValue("rewardPerRegister") ?? 0;
+            $rewardPerRegister = PluginSettingsAccessor::getRewardPerRegistrationInPoints();
             $userHistoryEntry->createEntry($rewardPerRegister, sprintf("Registration am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
         }
     }
@@ -138,16 +141,14 @@ class Bootstrap extends Bootstrapper
      */
     private function rewardVisit(): void
     {
-        $isEnabled = $this->getPluginValue("enableRewardVisit") ?? "off";
-        if (Frontend::getCustomer()->isLoggedIn() && $isEnabled === "on") {
+        if (Frontend::getCustomer()->isLoggedIn() && PluginSettingsAccessor::getRewardPerVisitIsEnabled()) {
             $currentUser = Frontend::getCustomer();
             $userHistoryEntry = new UserHistoryEntry();
             $lastRewarded = new LastRewarded($currentUser);
 
-            $timeInterval = $this->getPluginValue("rewardPerVisitCooldown") ?? "DAY";
-            $timeIntervalSeconds = $this->getTimeIntervalToSeconds($timeInterval);
+            $timeIntervalSeconds = $this->getTimeIntervalToSeconds(PluginSettingsAccessor::getRewardPerVisitCooldownOption());
             if ($lastRewarded->isSecondsSinceDatePast($timeIntervalSeconds, $lastRewarded->getVisitAt())) {
-                $rewardPerVisit = (int) $this->getPluginValue("rewardPerVisit") ?? 0;
+                $rewardPerVisit = PluginSettingsAccessor::getRewardPerVisitInPoints();
                 $userHistoryEntry->createEntry($rewardPerVisit, sprintf("Wiederholter Besuch: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
                 $lastRewarded->setVisitAt()->save();
             }
@@ -169,16 +170,15 @@ class Bootstrap extends Bootstrapper
      */
     private function rewardLogin($args): void
     {
-        $isEnabled = $this->getPluginValue("enableRewardLogin") ?? "off";
-        if ($isEnabled === "on") {
+        if (PluginSettingsAccessor::getRewardPerLoginIsEnabled()) {
             /** @var Customer $currentUser */
             $currentUser = $args["oKunde"];
             $userHistoryEntry = new UserHistoryEntry();
             $lastRewarded = new LastRewarded($currentUser);
-            $timeInterval = $this->getPluginValue("rewardPerLoginCooldown") ?? "DAY";
+            $timeInterval = PluginSettingsAccessor::getRewardPerLoginCooldownOption();
             $timeIntervalSeconds = $this->getTimeIntervalToSeconds($timeInterval);
             if ($lastRewarded->isSecondsSinceDatePast($timeIntervalSeconds, $lastRewarded->getLoginAt())) {
-                $rewardPerLogin = (int) $this->getPluginValue("rewardPerLogin") ?? 0;
+                $rewardPerLogin = PluginSettingsAccessor::getRewardPerLoginInPoints();
                 $userHistoryEntry->createEntry($rewardPerLogin, sprintf("Login am: %s", (new \DateTime())->format("d.m.Y")), $currentUser->kKunde, true)->save();
                 $lastRewarded->setLoginAt()->save();
             }
@@ -192,19 +192,18 @@ class Bootstrap extends Bootstrapper
     {
         $evaluator = new CartEvaluator();
         // Points per article
-        $pointsPieceSettingPoints = (int) $this->getPluginValue("rewardPerArticle") ?? 0;
+        $pointsPieceSettingPoints = PluginSettingsAccessor::getRewardPerArticleByDefault();
         $pointsPiece = new PointsPerArticle();
         $pointsPiece->setDefaultPoints($pointsPieceSettingPoints);
         $evaluator->registerPointType($pointsPiece);
         // Points per article once
-        $pointsOnceSettingPoints = (int) $this->getPluginValue("rewardPerArticleOnce") ?? 0;
+        $pointsOnceSettingPoints = PluginSettingsAccessor::getRewardPerArticleOnceByDefault();
         $pointsOnce = new PointsPerArticleOnce();
         $pointsOnce->setDefaultPoints($pointsOnceSettingPoints);
         $evaluator->registerPointType($pointsOnce);
         // Points per euro
-        $pointsPerEuroSettingPoints = (int) $this->getPluginValue("rewardPerEuro") ?? 0;
-        $calculateWithNetPrice = $this->getPluginValue("calculateWithNetPrice") ?? "on";
-        $calculateWithNetPriceBool = $calculateWithNetPrice === "on";
+        $pointsPerEuroSettingPoints = PluginSettingsAccessor::getRewardPerValueEachEuroByDefault();
+        $calculateWithNetPriceBool = PluginSettingsAccessor::getRewardPerValueEachEuroInNetPrices();
         $pointsPerEuro = new PointsPerEuro();
         $pointsPerEuro->setTaxSetting($calculateWithNetPriceBool);
         $pointsPerEuro->setDefaultPoints($pointsPerEuroSettingPoints);

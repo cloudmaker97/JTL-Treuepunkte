@@ -2,6 +2,7 @@
 namespace Plugin\dh_bonuspunkte\source\classes\history;
 use JTL\Customer\Customer;
 use JTL\DB\ReturnType;
+use JTL\Plugin\PluginInterface;
 use JTL\Shop;
 class UserHistory {
     /** @var UserHistoryEntry[] $historyEntries */
