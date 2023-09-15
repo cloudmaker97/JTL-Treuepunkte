@@ -176,7 +176,7 @@ class PluginSettingsAccessor
      * Get the minimum amount of points for trade-in to shop balance
      * @return int
      */
-    public static function getConversionMinimumPointsTrade(): int
+    public static function getConversionMinimumPointsTradeIn(): int
     {
         return (int) static::getPluginConfigValue("conversionMinimumPointAmount") ?? 1000;
     }

@@ -17,6 +17,7 @@ use Plugin\dh_bonuspunkte\source\classes\cart\evaluator\CartEvaluator;
 use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticle;
 use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerArticleOnce;
 use Plugin\dh_bonuspunkte\source\classes\cart\points\PointsPerEuro;
+use Plugin\dh_bonuspunkte\source\classes\conversion\PointsToBalanceConversion;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
 use Plugin\dh_bonuspunkte\source\classes\helper\PluginSettingsAccessor;
@@ -49,31 +50,31 @@ class Bootstrap extends Bootstrapper
     }
 
     /**
-     * Register the event listeners for the plugin, 
+     * Register the event listeners for the plugin,
      * so that the plugin can react to the events of the shop
      */
     private function dispatcherListeners(): void
     {
         // Hook: Page in the frontend is loaded
-        $this->dispatcher->listen('shop.hook.' . HOOK_SEITE_PAGE, function() {
+        $this->dispatcher->listen('shop.hook.' . HOOK_SEITE_PAGE, function () {
             // Inject the webpack script inline to the head of the page
-            $this->dispatcher->listen('shop.hook.' . HOOK_SMARTY_OUTPUTFILTER, function() {
+            $this->dispatcher->listen('shop.hook.' . HOOK_SMARTY_OUTPUTFILTER, function () {
                 $this->injectWebpackScriptInline();
             });
             $this->pageFrontendLink();
         });
 
         // Hook: Order status change
-        $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BESTELLSTATUS, function($args) {
+        $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BESTELLSTATUS, function ($args) {
             $order = $args['oBestellung'];
             $orderStatus = $order->cStatus;
-            if($orderStatus == BESTELLUNG_STATUS_BEZAHLT || $orderStatus == BESTELLUNG_STATUS_VERSANDT || $orderStatus == BESTELLUNG_STATUS_TEILVERSANDT) {
+            if ($orderStatus == BESTELLUNG_STATUS_BEZAHLT || $orderStatus == BESTELLUNG_STATUS_VERSANDT || $orderStatus == BESTELLUNG_STATUS_TEILVERSANDT) {
                 // Add the points to the user
                 UserHistoryEntry::setValuedAtForOrderNow($order->kBestellung);
             }
         });
 
-        $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BEARBEITESTORNO, function($args) {
+        $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BEARBEITESTORNO, function ($args) {
             $order = $args['oBestellung'];
             UserHistoryEntry::setValuedAtForOrderNow($order->kBestellung, false);
         });
@@ -118,7 +119,8 @@ class Bootstrap extends Bootstrapper
      * This is a workaround to optimize / maintain the performance of the shop
      * @throws Exception
      */
-    private function injectWebpackScriptInline(): void {
+    private function injectWebpackScriptInline(): void
+    {
         $scriptElement = sprintf("<script>%s</script>", file_get_contents(__DIR__ . "/frontend/js/main.js"));
         pq("head")->append($scriptElement);
     }
@@ -158,10 +160,25 @@ class Bootstrap extends Bootstrapper
     /**
      * Add the history to the smarty variables
      */
-    private function pageFrontendLink(): void {
-        if(Frontend::getCustomer()->isLoggedIn()) {
-            $history = new UserHistory(Frontend::getCustomer());
-            Shop::Smarty()->assign("dh_bonuspunkte_history", $history);
+    private function pageFrontendLink(): void
+    {
+        if (Frontend::getCustomer()->isLoggedIn()) {
+            $userHistory = new UserHistory(Frontend::getCustomer());
+            $conversionObject = new PointsToBalanceConversion();
+            $conversionObject->setIsEnabled(PluginSettingsAccessor::getConversionToShopBalanceIsEnabled());
+            $conversionObject->setMinimumTradeIn(PluginSettingsAccessor::getConversionMinimumPointsTradeIn());
+            $conversionObject->setPointsForOneEuro(PluginSettingsAccessor::getConversionRateForEachEuroInPoints());
+            $conversionObject->setUnlockedPoints($userHistory->getTotalValuedPoints());
+            $conversionObject->setCustomer(Frontend::getCustomer());
+
+            $variables = [
+                "dh_bonuspunkte_history" => $userHistory,
+                "dh_bonuspunkte_unlock_days" => PluginSettingsAccessor::getRewardUnlockAfterDays(),
+                "dh_bonuspunkte_conversion" => $conversionObject,
+            ];
+            foreach ($variables as $key => $value) {
+                Shop::Smarty()->assign($key, $value);
+            }
         }
     }
 
