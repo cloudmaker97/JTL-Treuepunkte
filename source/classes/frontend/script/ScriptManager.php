@@ -3,9 +3,22 @@
 namespace Plugin\dh_bonuspunkte\source\classes\frontend\script;
 
 use Exception;
+use JTL\Exceptions\CircularReferenceException;
+use JTL\Exceptions\ServiceNotFoundException;
 use JTL\Shop;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
+use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
+use Plugin\dh_bonuspunkte\source\classes\helper\PluginInterfaceAccessor;
 
+/**
+ * The script manager is used to load javascript code into the page.
+ * It has a method for selecting a script via a ScriptType enum.
+ * The scripts are injected via. the shop function "pq" which stands for
+ * phpQuery. It is a library for placing and modifying the data object model
+ * before it will be rendered by smarty. Due to this call the scripts can only be
+ * injected after the Smarty object is instantiated and before it is rendered by the shop, so
+ * you can use the event dispatcher hook "HOOK_SMARTY_OUTPUTFILTER"
+ */
 class ScriptManager
 {
     /**
@@ -29,14 +42,12 @@ class ScriptManager
     private function injectDebugMessages(): void
     {
         try {
-            $consoleMessage = DebugManager::outputMessagesCode();
-            pq("head")->append($consoleMessage);
+            $this->appendToHead(DebugManager::outputMessagesCode());
         } catch (Exception $exception) {
             $this->writePersistentErrorMessage($exception);
         } finally {
             DebugManager::resetMessages();
         }
-
     }
 
     /**
@@ -48,13 +59,14 @@ class ScriptManager
      */
     private function injectWebpackScriptInline(): void
     {
+        $pluginInterface = PluginInterfaceAccessor::getPluginInterface();
+        $pluginBasePath = $pluginInterface->getPaths()->getBasePath();
+        $scriptRealPath = realpath(sprintf("%s/frontend/js/main.js", $pluginBasePath));
         try {
-            $scriptFilePath = realpath(__DIR__ . "/../../../../frontend/js/main.js");
-            if($scriptFilePath === false) {
+            if($scriptRealPath === false) {
                 throw new Exception("The webpack script couldn't be loaded, the file doesn't exist.");
             } else {
-                $scriptElement = sprintf("<script>%s</script>", file_get_contents($scriptFilePath));
-                pq("head")->append($scriptElement);
+                $this->appendToHead(sprintf("<script>%s</script>", file_get_contents($scriptRealPath)));
             }
         } catch (Exception $exception) {
             $this->writePersistentErrorMessage($exception);
@@ -63,10 +75,21 @@ class ScriptManager
 
     /**
      * Write a persistent error message to the shop log service
-     * @noinspection PhpUnhandledExceptionInspection
      */
     private function writePersistentErrorMessage(Exception $exception): void
     {
-        Shop::Container()->getLogService()->critical($exception->getMessage(), $exception->getTrace());
+        DebugManager::addMessage(new DebugMessage($exception->getMessage()));
+        try {
+            Shop::Container()->getLogService()->critical($exception->getMessage(), $exception->getTrace());
+        } catch (CircularReferenceException|ServiceNotFoundException) {}
+    }
+
+    /**
+     * Append a string to the header of the current document
+     * @throws Exception
+     */
+    private function appendToHead(string $element): void
+    {
+        pq("head")->append($element);
     }
 }

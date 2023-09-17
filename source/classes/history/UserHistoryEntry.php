@@ -36,7 +36,9 @@ class UserHistoryEntry {
         if($this->valuedAt == null || $this->createdAt == null) {
             return false;
         }
-
+        // Negative amounts are instantly valued, e.g. for trade-in or points to shop balance exchange
+        if($this->getPoints() < 0) return true;
+        // Otherwise check if the minimum days for unlock are fulfilled
         return $this->isMinimumUnlockInDaysFulfilled();
     }
 
@@ -158,7 +160,7 @@ class UserHistoryEntry {
     /**
      * Save the entry to the database
      */
-    public function save(): void {
+    public function save(): self {
         try {
             $database = Shop::Container()->getDB();
             $insertObject = new \stdClass();
@@ -178,6 +180,7 @@ class UserHistoryEntry {
         } catch(Exception) {
             DebugManager::addMessage(new DebugMessage("Punkte-Eintrag konnte nicht gespeichert werden, unbekannter Fehler.", []));
         }
+        return $this;
     }
 
     /**
