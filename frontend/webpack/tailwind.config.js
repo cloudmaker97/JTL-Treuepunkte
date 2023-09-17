@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./src/**/*.js",
+    "./src/**/*.ts",
     "../template/**/*.tpl",
     "../../source/**/*.php",
   ],

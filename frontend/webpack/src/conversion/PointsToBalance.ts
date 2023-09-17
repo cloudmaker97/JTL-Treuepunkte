@@ -10,7 +10,7 @@ export default class PointsToBalance {
 
         // Check validity after clicking the submit button
         this.inputSubmit.addEventListener('click', () => {
-            this.inputElement.reportValidity();
+            this.inputValidityCheck();
             // @todo logic for ajax conversion
         });
 
@@ -26,25 +26,44 @@ export default class PointsToBalance {
      * @private
      */
     private updatePreviewConversionAfterInput() {
-        this.inputElement.reportValidity()
+        this.inputValidityCheck();
         let previewConversion: any = this.calculatePointsToEuro(this.currentInputNumber).toFixed(2);
         if(isNaN(previewConversion)) return;
+        if(previewConversion < 0) return;
         previewConversion = previewConversion.toString().replace(".", ",");
         this.previewConversion.textContent = previewConversion;
+        this.previewConversionInput.textContent = this.inputElement.value.toString();
+    }
+
+    /**
+     * Checks the exchange preview input for validity
+     * @private
+     */
+    private inputValidityCheck(): boolean {
+        let validateResult: boolean = this.inputElement.reportValidity();
+
+        // User haptic, red border on validity issues
+        const errorClass = "!border-[#FF0000]";
+        if(validateResult) {
+            this.inputElement.classList.remove(errorClass);
+        } else {
+            this.inputElement.classList.add(errorClass);
+        }
+        return validateResult;
     }
 
     /**
      * Calculate an amount of points into real currency money (euro)
      * @param points
      */
-    calculatePointsToEuro(points: number): number {
+    private calculatePointsToEuro(points: number): number {
         return points / this.conversionRateEuroInPoints;
     }
 
     /**
      * Get the current input field value as parsed number
      */
-    get currentInputNumber(): number {
+    private get currentInputNumber(): number {
         return parseInt(
             this.inputElement.value
         );
@@ -53,14 +72,21 @@ export default class PointsToBalance {
     /**
      * Get the dom element, containing the exchange rate preview
      */
-    get previewConversion(): Element {
+    private get previewConversion(): Element {
         return this.widgetElement.querySelector("[data-ref='bonusPointsExchangeRate']")
+    }
+
+    /**
+     * Get the dom element, containing the input of the exchange preview
+     */
+    private get previewConversionInput(): Element {
+        return this.widgetElement.querySelector("[data-ref='bonusPointsInput']");
     }
 
     /**
      * Get the amount of points that represent one real currency euro in exchange
      */
-    get conversionRateEuroInPoints(): number {
+    private get conversionRateEuroInPoints(): number {
         return parseInt(
             this.widgetElement.querySelector("[data-exchange-rate]").getAttribute("data-exchange-rate")
         );
@@ -69,21 +95,21 @@ export default class PointsToBalance {
     /**
      * Get the widget dom element
      */
-    get widgetElement(): Element {
+    private get widgetElement(): Element {
         return this._widgetElement;
     }
 
     /**
      * Get the input field
      */
-    get inputElement(): HTMLInputElement {
+    private get inputElement(): HTMLInputElement {
         return this._inputElement;
     }
 
     /**
      * Get the input submit button
      */
-    get inputSubmit(): HTMLInputElement {
+    private get inputSubmit(): HTMLInputElement {
         return this._inputSubmit;
     }
 }
