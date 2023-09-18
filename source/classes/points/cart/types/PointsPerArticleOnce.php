@@ -1,7 +1,6 @@
 <?php
-namespace Plugin\dh_bonuspunkte\source\classes\cart\points;
+namespace Plugin\dh_bonuspunkte\source\classes\points\cart\types;
 
-use JTL\Cart\CartItem;
 use Plugin\dh_bonuspunkte\source\interfaces\points\IPoint;
 
 /**

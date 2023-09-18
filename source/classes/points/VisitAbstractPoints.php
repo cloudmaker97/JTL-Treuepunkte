@@ -1,19 +1,24 @@
 <?php
 
-namespace Plugin\dh_bonuspunkte\source\classes\rewards;
+namespace Plugin\dh_bonuspunkte\source\classes\points;
 
 use JTL\Customer\Customer;
 use JTL\Session\Frontend;
 use Plugin\dh_bonuspunkte\source\classes\helper\PluginSettingsAccessor;
 
-class VisitReward extends AbstractReward
+class VisitAbstractPoints extends AbstractPoints
 {
-
+    /**
+     * @inheritDoc
+     */
     protected function getCurrentCustomer(): Customer
     {
         return Frontend::getCustomer();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function executeRewardLogic(): void
     {
         if ($this->getCurrentCustomer()->isLoggedIn() && PluginSettingsAccessor::getRewardPerVisitIsEnabled()) {

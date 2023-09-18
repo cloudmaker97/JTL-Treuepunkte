@@ -115,7 +115,7 @@ class LastRewarded
     {
         $now = new DateTime();
         $diff = $now->getTimestamp() - $date->getTimestamp();
-        return $diff >= $seconds;
+        return $diff <= $seconds;
     }
 
     /**

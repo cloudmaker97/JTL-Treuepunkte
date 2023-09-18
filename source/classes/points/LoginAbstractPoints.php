@@ -1,16 +1,22 @@
 <?php
 
-namespace Plugin\dh_bonuspunkte\source\classes\rewards;
+namespace Plugin\dh_bonuspunkte\source\classes\points;
 
 use JTL\Customer\Customer;
 use Plugin\dh_bonuspunkte\source\classes\helper\PluginSettingsAccessor;
 
-class LoginReward extends AbstractReward
+class LoginAbstractPoints extends AbstractPoints
 {
+    /**
+     * @inheritDoc
+     */
     public function getCurrentCustomer(): Customer {
         return $this->getArgumentByKey("oKunde");
     }
 
+    /**
+     * @inheritDoc
+     */
     public function executeRewardLogic(): void
     {
         if (PluginSettingsAccessor::getRewardPerLoginIsEnabled()) {

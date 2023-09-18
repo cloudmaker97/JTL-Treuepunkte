@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\dh_bonuspunkte\source\classes\rewards;
+namespace Plugin\dh_bonuspunkte\source\classes\points;
 
 use DateTime;
 use JTL\Customer\Customer;
@@ -8,7 +8,7 @@ use Plugin\dh_bonuspunkte\source\classes\history\LastRewarded;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistoryEntry;
 use Plugin\dh_bonuspunkte\source\interfaces\rewards\IReward;
 
-abstract class AbstractReward implements IReward
+abstract class AbstractPoints implements IReward
 {
     /** @var array The array of arguments */
     private array $_arguments;

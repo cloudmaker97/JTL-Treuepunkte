@@ -2,3 +2,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* If this isn't set, the navigation will be shown (due to a inaccurate css class from the original JTL template) */
+#mainNavigation {
+    @apply visible;
+}

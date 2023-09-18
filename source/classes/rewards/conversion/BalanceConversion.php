@@ -1,15 +1,20 @@
 <?php
 
-namespace Plugin\dh_bonuspunkte\source\classes\conversion;
+namespace Plugin\dh_bonuspunkte\source\classes\rewards\conversion;
 
 use JTL\Customer\Customer;
 
-class PointsToBalanceConversion
+class BalanceConversion
 {
+    /** @var bool If the widget is enabled  */
     private bool $isEnabled;
+    /** @var int The minimum amount of points for trade-in */
     private int $minimumTradeIn;
+    /** @var int The amount of points that represent 1 euro */
     private int $pointsForOneEuro;
+    /** @var int The amount of unlocked and valued points */
     private int $unlockedPoints;
+    /** @var Customer The current customer */
     private Customer $customer;
 
     /**

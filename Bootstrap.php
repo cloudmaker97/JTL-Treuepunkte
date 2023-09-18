@@ -6,18 +6,18 @@
 
 namespace Plugin\dh_bonuspunkte;
 
-use Exception;
+use JTL\Catalog\Product\Artikel;
 use JTL\Events\Dispatcher;
 use JTL\Plugin\Bootstrapper;
 use JTL\Session\Frontend;
-use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\frontend\PageController;
 use Plugin\dh_bonuspunkte\source\classes\frontend\script\ScriptManager;
 use Plugin\dh_bonuspunkte\source\classes\frontend\script\ScriptType;
-use Plugin\dh_bonuspunkte\source\classes\rewards\CartReward;
-use Plugin\dh_bonuspunkte\source\classes\rewards\LoginReward;
-use Plugin\dh_bonuspunkte\source\classes\rewards\RegisterReward;
-use Plugin\dh_bonuspunkte\source\classes\rewards\VisitReward;
+use Plugin\dh_bonuspunkte\source\classes\points\CartAbstractPoints;
+use Plugin\dh_bonuspunkte\source\classes\points\LoginAbstractPoints;
+use Plugin\dh_bonuspunkte\source\classes\points\RegisterAbstractPoints;
+use Plugin\dh_bonuspunkte\source\classes\points\VisitAbstractPoints;
+use Plugin\dh_bonuspunkte\source\classes\rewards\products\ProductRewards;
 
 /**
  * Class Bootstrap
@@ -25,6 +25,7 @@ use Plugin\dh_bonuspunkte\source\classes\rewards\VisitReward;
  */
 class Bootstrap extends Bootstrapper
 {
+
     private Dispatcher $dispatcher;
     private ScriptManager $scriptManager;
 
@@ -56,39 +57,46 @@ class Bootstrap extends Bootstrapper
      */
     private function dispatcherListeners(): void
     {
+        // Hook: Update data in articles after loaded
+        $this->dispatcher->listen('shop.hook.'.HOOK_ARTIKEL_CLASS_FUELLEARTIKEL, function ($args) {
+            (new ProductRewards())->updateProductAfterLoaded($args['oArtikel']);
+        });
+        $this->dispatcher->listen('shop.hook.'.HOOK_BESTELLVORGANG_PAGE_STEPVERSAND_PLAUSI, function () {
+            die;
+        });
         // Hook: Page in the frontend is loaded
         $this->dispatcher->listen('shop.hook.' . HOOK_SEITE_PAGE, function () {
             new PageController();
-            
-            // Inject the webpack script inline to the head of the page
-            $this->dispatcher->listen('shop.hook.' . HOOK_SMARTY_OUTPUTFILTER, function () {
-                $this->getScriptManager()->loadScript(ScriptType::WebpackInline);
-            });
         });
         // Hook: Order status change
         $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BESTELLSTATUS, function ($args) {
-            (new CartReward($args))->setOrderStatusProcessed();
+            (new CartAbstractPoints($args))->setOrderStatusProcessed();
         });
         // Hook: Order status changed to canceled
         $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLUNGEN_XML_BEARBEITESTORNO, function ($args) {
-            (new CartReward($args))->setOrderStatusCanceled();
+            (new CartAbstractPoints($args))->setOrderStatusCanceled();
         });
         // Hook: Cart finalization
         $this->dispatcher->listen('shop.hook.' . HOOK_BESTELLABSCHLUSS_INC_BESTELLUNGINDB_ENDE, function ($args) {
-            (new CartReward($args))->executeRewardLogic();
+            (new CartAbstractPoints($args))->executeRewardLogic();
         });
         // Hook: Account Login
         $this->dispatcher->listen('shop.hook.' . HOOK_KUNDE_CLASS_HOLLOGINKUNDE, function ($args) {
-            (new LoginReward($args))->executeRewardLogic();
+            (new LoginAbstractPoints($args))->executeRewardLogic();
         });
         // Hook: Registration
         $this->dispatcher->listen('shop.hook.' . HOOK_REGISTRATION_CUSTOMER_CREATED, function ($args) {
-            (new RegisterReward($args))->executeRewardLogic();
+            (new RegisterAbstractPoints($args))->executeRewardLogic();
         });
         // Hook: Each visit, before the smarty template is rendered
         $this->dispatcher->listen('shop.hook.' . HOOK_SMARTY_OUTPUTFILTER, function ($args) {
-            (new VisitReward($args))->executeRewardLogic();
+            (new ProductRewards())->reloadPageAfterCartChange();
+            (new VisitAbstractPoints($args))->executeRewardLogic();
             $this->getScriptManager()->loadScript(ScriptType::DebugMessages);
+            $this->getScriptManager()->loadScript(ScriptType::WebpackInline);
         });
+
+        (new ProductRewards())->updateCartPositionsForRewardProducts();
+
     }
 }

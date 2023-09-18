@@ -1,17 +1,31 @@
 <div class="container">
     {opcMountPoint id='dh_bonuspunkte_begin_container'}
 
+    {if $dh_bonuspunkte_unlock_days == 1}
+        {$dh_bonuspunkte_unlock_days_text = "Tag"}
+    {else}
+        {$dh_bonuspunkte_unlock_days_text = "Tagen"}
+    {/if}
+
     {if $dh_bonuspunkte_form_success }
         <div class="bg-emerald-600 text-white p-2 mb-5 rounded-sm text-lg">Die Punkte wurden in Shop-Guthaben umgewandelt</div>
     {/if}
     {if $dh_bonuspunkte_form_error != false}
         <div class="bg-red-600 text-white p-2 mb-5 rounded-sm text-lg">{$dh_bonuspunkte_form_error}</div>
     {/if}
+
     <h2>Mein Kontostand</h2>
     {opcMountPoint id='dh_bonuspunkte_balance'}
     <p>
         Hier können Sie Ihren aktuellen Kontostand einsehen. Die Punkte werden in der Regel direkt nach Abschluss der
-        Bestellung gutgeschrieben.
+        Bestellung gutgeschrieben, das ist in der Regel
+        {if $dh_bonuspunkte_unlock_days == 0}
+            sofort nach Zahlungseingang.
+        {else}
+            innerhalb von {$dh_bonuspunkte_unlock_days} {$dh_bonuspunkte_unlock_days_text}.
+        {/if}
+        Sie erhalten Punkte ausschließlich für Bestellungen, welche nicht mit Ihrem Guthaben
+        bezahlt worden sind.
     </p>
     <table class="table table-responsive">
         <tr>
@@ -68,13 +82,12 @@
     {opcMountPoint id='dh_bonuspunkte_history'}
     <p>
         Auf dieser Seite können Sie den Verlauf (die letzten fünfzig Einträge) und den Zustand Ihrer Bonuspunkte
-        einsehen. In einigen Fällen
-        sind die Punkte noch nicht gebucht, da die Bestellung noch nicht abgeschlossen ist. Sobald die Bestellung
-        abgeschlossen ist, werden die Punkte
+        einsehen. In einigen Fällen sind die Punkte noch nicht gebucht, da die Bestellung noch nicht abgeschlossen ist.
+        Sobald die Bestellung abgeschlossen ist, werden die Punkte
         {if $dh_bonuspunkte_unlock_days <= 0}
             sofort gutgeschrieben
         {else}
-            innerhalb von etwa {$dh_bonuspunkte_unlock_days} {if $dh_bonuspunkte_unlock_days == 1}Tag{else}Tagen{/if} ihrem Konto gutgeschrieben.
+            innerhalb von etwa {$dh_bonuspunkte_unlock_days} {$dh_bonuspunkte_unlock_days_text} ihrem Konto gutgeschrieben.
         {/if}
     </p>
     <table class="table">

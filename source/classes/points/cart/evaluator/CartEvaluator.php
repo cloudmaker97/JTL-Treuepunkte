@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\dh_bonuspunkte\source\classes\cart\evaluator;
+namespace Plugin\dh_bonuspunkte\source\classes\points\cart\evaluator;
 use JTL\Cart\CartItem;
 use JTL\Session\Frontend;
 use Plugin\dh_bonuspunkte\source\interfaces\points\IPoint;

@@ -7,11 +7,11 @@ use JTL\Customer\Customer;
 use JTL\Link\Link;
 use JTL\Session\Frontend;
 use JTL\Shop;
-use Plugin\dh_bonuspunkte\source\classes\conversion\PointsToBalanceConversion;
 use Plugin\dh_bonuspunkte\source\classes\helper\PluginInterfaceAccessor;
 use Plugin\dh_bonuspunkte\source\classes\helper\PluginSettingsAccessor;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistory;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistoryEntry;
+use Plugin\dh_bonuspunkte\source\classes\rewards\conversion\BalanceConversion;
 
 class PageController
 {
@@ -135,11 +135,11 @@ class PageController
 
     /**
      * @param UserHistory $userHistory Is used for calculating the current amount of available points
-     * @return PointsToBalanceConversion
+     * @return BalanceConversion
      */
-    public function getPointsToBalanceConverter(UserHistory $userHistory): PointsToBalanceConversion
+    public function getPointsToBalanceConverter(UserHistory $userHistory): BalanceConversion
     {
-        $conversionObject = new PointsToBalanceConversion();
+        $conversionObject = new BalanceConversion();
         $conversionObject->setIsEnabled(PluginSettingsAccessor::getConversionToShopBalanceIsEnabled());
         $conversionObject->setMinimumTradeIn(PluginSettingsAccessor::getConversionMinimumPointsTradeIn());
         $conversionObject->setPointsForOneEuro(PluginSettingsAccessor::getConversionRateForEachEuroInPoints());

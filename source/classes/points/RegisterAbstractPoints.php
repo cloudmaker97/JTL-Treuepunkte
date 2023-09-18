@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\dh_bonuspunkte\source\classes\rewards;
+namespace Plugin\dh_bonuspunkte\source\classes\points;
 
 use Exception;
 use JTL\Customer\Customer;
@@ -8,9 +8,10 @@ use JTL\Session\Frontend;
 use Plugin\dh_bonuspunkte\source\classes\helper\PluginSettingsAccessor;
 use Plugin\dh_bonuspunkte\source\classes\history\UserHistoryEntry;
 
-class RegisterReward extends AbstractReward
+class RegisterAbstractPoints extends AbstractPoints
 {
     /**
+     * @inheritDoc
      * @throws Exception
      */
     protected function getCurrentCustomer(): Customer
@@ -23,7 +24,7 @@ class RegisterReward extends AbstractReward
     }
 
     /**
-     * @return void
+     * @inheritDoc
      */
     public function executeRewardLogic(): void
     {
