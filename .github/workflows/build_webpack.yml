@@ -47,7 +47,7 @@ jobs:
           rm .git -rf
           find . -type f -not -path '*/temp_dir/*' -exec cp --parents '{}' './temp_dir/' \;
           mv temp_dir ${{ env.PLUGIN_NAME }}
-          zip -r ${{ env.PLUGIN_NAME }}.zip plugin_start
+          zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
 
       - name: release
         uses: softprops/action-gh-release@v1
