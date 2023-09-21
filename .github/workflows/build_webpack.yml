@@ -1,0 +1,56 @@
+name: Build Webpack
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+
+env:
+  PLUGIN_NAME: dh_bonuspunkte
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: setup_node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+
+      - name: npm_install
+        working-directory: ./frontend/webpack
+        run: npm install
+
+      - name: build_webpack
+        working-directory: ./frontend/webpack
+        run: npm run build
+
+      - name: node_cleanup
+        working-directory: ./frontend/webpack
+        run: rm -rf node_modules
+
+      - name: version
+        id: get_version
+        uses: michmich112/extract-version@main
+        with:
+          version-file: info.xml
+          schema: major.minor.build
+
+      - name: zip
+        run: |
+          mkdir temp_dir
+          rm .git -rf
+          find . -type f -not -path '*/temp_dir/*' -exec cp --parents '{}' './temp_dir/' \;
+          mv temp_dir ${{ env.PLUGIN_NAME }}
+          zip -r ${{ env.PLUGIN_NAME }}.zip plugin_start
+
+      - name: release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ./${{ env.PLUGIN_NAME }}.zip

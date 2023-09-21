@@ -25,7 +25,6 @@ use Plugin\dh_bonuspunkte\source\classes\rewards\products\ProductRewards;
  */
 class Bootstrap extends Bootstrapper
 {
-
     private Dispatcher $dispatcher;
     private ScriptManager $scriptManager;
 
@@ -97,6 +96,5 @@ class Bootstrap extends Bootstrapper
         });
 
         (new ProductRewards())->updateCartPositionsForRewardProducts();
-
     }
 }
