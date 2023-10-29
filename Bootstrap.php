@@ -60,9 +60,6 @@ class Bootstrap extends Bootstrapper
         $this->dispatcher->listen('shop.hook.'.HOOK_ARTIKEL_CLASS_FUELLEARTIKEL, function ($args) {
             (new ProductRewards())->updateProductAfterLoaded($args['oArtikel']);
         });
-        $this->dispatcher->listen('shop.hook.'.HOOK_BESTELLVORGANG_PAGE_STEPVERSAND_PLAUSI, function () {
-            die;
-        });
         // Hook: Page in the frontend is loaded
         $this->dispatcher->listen('shop.hook.' . HOOK_SEITE_PAGE, function () {
             new PageController();

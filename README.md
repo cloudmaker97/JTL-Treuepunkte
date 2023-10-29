@@ -4,12 +4,8 @@
 
 Es handelt sich um ein kostenloses Plugin, daher bedenken Sie bei Ihren Anfragen bitte, dass ich dies in meiner Freizeit entwickle und daher nicht immer sofort antworten kann. Wenn das Plugin Ihre Bedürfnisse nicht erfüllt, so können Sie gerne eine Agentur mit der kostenpflichtigen Entwicklung beauftragen. Es besteht durch die Nutzung kein Anspruch auf Support oder Fehlerbehebung. Die Nutzung erfolgt auf eigene Gefahr und Verantwortung. Die Lizenzbedingungen sind in der `LICENSE` Datei des Plugins zu finden.
 
-### Ihr Ansprechpartner
-
-Entwickler: Dennis Heinrich<br />
-Internet: [https://dennis-heinri.ch](https://dennis-heinri.ch)<br />
-E-Mail: [hey@dennis-heinri.ch](mailto:hey@dennis-heinri.ch)<br />
-*Anfragen bitte auschließlich per E-Mail.*
+Support zum Plugin gibt es ausschließlich über dieses Formular:
+https://dennis-heinri.ch/projekte/jtl-support/
 
 ## Einrichtung
 
@@ -64,8 +60,12 @@ Im Shop wird im Dropdown im Header ein neuer Menüpunkt angezeigt, welcher den K
 Es handelt sich bei der Übersichtsseite um einen "Frontend-Link", welchen Sie im Shop-Backend unter "Eigene Inhalte → Seiten" und dann in der Lingruppe "HIDDEN → Bonuspunkte" finden. Dort können Sie dem Seiteninhalt auch mit eigenen Texten erweitern, wenn Sie weiter runter scrollen und dann das Feld "Inhalt" bearbeiten und anschließend speichern.
 
 ### Prämien-Artikel
+(Aktuell in Entwicklung)
+Wenn Artikel mit einem Funktionsattribut ausgestattet ist, kann über das Funktionsattribut angeben werden, wie viele Punkte zum Einlösen erforderlich sind. Die Anzahl der benötigten Punkte für diesen Artikel werden dem Kunden einerseits auf der Artikel-Detailseite in der Nähe des "In den Warenkorb"-Buttons angezeigt, als auch im Warenkorb selbst.
 
 ### Bonusguthaben
+Ein Kunde kann seine Treuepunkte gegen Guthaben im Shop auf der Seite für Bonuspunkte eintauschen. Der Shop-Betreiber kann einstellen, wie viele Punkte für einen Euro benötigt werden und ob der Umtausch in Shop-Guthaben für Kunden erlaubt sein soll.
+
 
 <style>
   /* This is only for the plugin tab needed */
