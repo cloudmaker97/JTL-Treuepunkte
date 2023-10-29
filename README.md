@@ -7,6 +7,9 @@ Es handelt sich um ein kostenloses Plugin, daher bedenken Sie bei Ihren Anfragen
 Support zum Plugin gibt es ausschließlich über dieses Formular:
 https://dennis-heinri.ch/projekte/jtl-support/
 
+Dokumentation zum Plugin ist auf dieser Seite zu finden:
+https://dennis-heinrich.notion.site/Bonuspunkte-Pr-mien-9d611781b5a64ad5b2ca27acf7ca67c0
+
 ## Einrichtung
 
 ### Funktionsattribute in der Warenwirtschaft einrichten
