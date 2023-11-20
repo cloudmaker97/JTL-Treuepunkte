@@ -7,7 +7,7 @@
     <PluginID>dh_bonuspunkte</PluginID>
     <XMLVersion>100</XMLVersion>
     <Icon></Icon>
-    <Version>0.0.12</Version>
+    <Version>0.1.0</Version>
     <ShopVersion>5.0.0</ShopVersion>
     <CreateDate>2023-09-11</CreateDate>
     <Install>
@@ -35,14 +35,14 @@
                 <Name>Einstellungen</Name>
                 <!-- Punkte für regelmäßige Anmeldungen -->
                 <Setting type="text" conf="N" sort="99">
-                    <Name>Belohnung für regelmäßige Konto-Anmmeldung</Name>
+                    <Name>Belohnung für regelmäßige Konto-Anmeldung</Name>
                     <Description>Hier können Sie Einstellungen treffen, ob regelmäßige Anmeldungen im Benutzerkonto
                         belohnt werden sollen.
                     </Description>
                     <ValueName>headerLogin</ValueName>
                 </Setting>
                 <Setting type="checkbox" initialValue="off" conf="Y" sort="100">
-                    <Name>Belohung für regelmäßige Anmeldung aktivieren</Name>
+                    <Name>Belohnung für regelmäßige Anmeldung aktivieren</Name>
                     <Description>Ob ein Kunde für eine Anmeldung (nach Ablauf der Zeit seiner letzten Anmeldung)
                         Bonuspunkte erhalten soll
                     </Description>
@@ -97,7 +97,7 @@
                     <ValueName>headerVisit</ValueName>
                 </Setting>
                 <Setting type="checkbox" initialValue="off" conf="Y" sort="200">
-                    <Name>Belohung für regelmäßige Besucher aktivieren</Name>
+                    <Name>Belohnung für regelmäßige Besucher aktivieren</Name>
                     <Description>Ob ein angemeldeter Kunde für seinen Besuch auf der Seite (nach Ablauf der Zeit für den
                         letzten Besuch) Bonuspunkte erhalten soll
                     </Description>
@@ -132,7 +132,7 @@
                     <ValueName>headerRegistration</ValueName>
                 </Setting>
                 <Setting type="checkbox" initialValue="off" conf="Y" sort="300">
-                    <Name>Belohung für Registration aktivieren</Name>
+                    <Name>Belohnung für Registration aktivieren</Name>
                     <Description>Ob ein Kunde für seine Registration auf der Seite Bonuspunkte erhalten soll
                     </Description>
                     <ValueName>enableRewardRegister</ValueName>
