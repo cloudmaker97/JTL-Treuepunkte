@@ -189,4 +189,22 @@ class PluginSettingsAccessor
     {
         return (int) static::getPluginConfigValue("rewardAfterThisDays") ?? 15;
     }
+
+    /**
+     * This is the flag, if the points are capped after a certain amount of points
+     * @return bool
+     */
+    public static function getIsUserPointsCappedEnabled(): bool
+    {
+        return (bool) static::getPluginConfigValue("enablePointsCap") ?? "off" == "on";
+    }
+
+    /**
+     * This is the amount of points that are capped for the user
+     * @return int
+     */
+    public static function getUserPointsCappedAt(): int
+    {
+        return (bool) static::getPluginConfigValue("pointsCapValue") ?? 0;
+    }
 }

@@ -68,6 +68,26 @@
                     </SelectboxOptions>
                 </Setting>
 
+                <!-- Maximale Anzahl von Punkte -->
+                <Setting type="text" conf="N" sort="199">
+                    <Name>Obergrenze für Punkte</Name>
+                    <Description>
+                        Hier können Sie Einstellungen treffen, ob Kunden nur eine bestimmte Anzahl von Punkten erhalten dürfen, als
+                        auch die Anzahl der maximalen Punkte.
+                    </Description>
+                    <ValueName>headerPointsCap</ValueName>
+                </Setting>
+                <Setting type="checkbox" initialValue="off" conf="Y" sort="100">
+                    <Name>Obergrenze für Punkte aktivieren</Name>
+                    <Description>Hier kann eingestellt werden, ob der Kunde nur eine bestimmte Anzahl von Punkten erhalten darf</Description>
+                    <ValueName>enablePointsCap</ValueName>
+                </Setting>
+                <Setting type="number" initialValue="off" conf="Y" sort="100">
+                    <Name>Obergrenze für maximale Punkte eines Kunden</Name>
+                    <Description>Hier kann eingestellt werden, wie viele Punkte der Kunde erhalten darf</Description>
+                    <ValueName>pointsCapValue</ValueName>
+                </Setting>
+
                 <!-- Punkte für wiederkehrende Besucher -->
                 <Setting type="text" conf="N" sort="199">
                     <Name>Belohnung für regelmäßige Besucher</Name>

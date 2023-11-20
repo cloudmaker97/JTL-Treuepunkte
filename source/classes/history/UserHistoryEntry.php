@@ -1,10 +1,9 @@
 <?php
 namespace Plugin\dh_bonuspunkte\source\classes\history;
-use DateInterval;
 use DateTime;
 use Exception;
+use JTL\Customer\Customer;
 use JTL\DB\ReturnType;
-use JTL\Helpers\Date;
 use JTL\Shop;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugManager;
 use Plugin\dh_bonuspunkte\source\classes\debug\DebugMessage;
@@ -132,8 +131,8 @@ class UserHistoryEntry {
      * Create a new entry from the given parameters
      */
     public function createEntry(int $points, string $text, int $userId, bool $isValued = false, ?int $orderId = null): UserHistoryEntry {
-        if($points == 0) {
-            DebugManager::addMessage(new DebugMessage("Punkte können nicht gutgeschrieben werden, da der Betrag 0 ist.", [
+        if($points <= 0) {
+            DebugManager::addMessage(new DebugMessage("Punkte können nicht gutgeschrieben werden, da der Betrag <= 0 ist.", [
                 "object" => $this,
             ]));
             return $this;
@@ -141,11 +140,10 @@ class UserHistoryEntry {
 
         $dateNow = new DateTime();
         $this->id = null;
+        $this->createdAt = $dateNow;
         if($isValued) {
-            $this->createdAt = $dateNow;
             $this->valuedAt = $dateNow;
         } else {
-            $this->createdAt = $dateNow;
             $this->valuedAt = null;
         }
         $this->orderId = $orderId;
@@ -170,7 +168,7 @@ class UserHistoryEntry {
             $insertObject->userId = $this->userId;
             $insertObject->orderId = $this->orderId;
             $insertObject->text = $this->text;
-            $insertObject->points = $this->points;
+            $insertObject->points = $this->getPointsWithCap();
             $insertObject->createdAt = $this->createdAt?->format("Y-m-d H:i:s");
             $insertObject->valuedAt = $this->valuedAt?->format("Y-m-d H:i:s");
             $this->id = $database->upsert(self::TABLE_NAME, $insertObject);
@@ -202,5 +200,31 @@ class UserHistoryEntry {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Get the points with the cap if the cap is enabled. The cap can be enabled
+     * and its value can be set in the plugin settings.
+     * @return int
+     */
+    public function getPointsWithCap(): int
+    {
+        // Check if the cap is enabled
+        if (PluginSettingsAccessor::getIsUserPointsCappedEnabled()) {
+            $userHistory = new UserHistory((new Customer())->loadFromDB($this->userId));
+            $currentPoints = $userHistory->getTotalValuedPoints(); // 31
+            $cappedPoints = PluginSettingsAccessor::getUserPointsCappedAt(); // 30
+            $estimatedPoints = $currentPoints + $this->points;
+            // Check if the estimated points are below the cap
+            if ($estimatedPoints <= $cappedPoints) {
+                // Only add points, when the current points are below the cap
+                $addPoints = $this->points;
+            } else {
+                // Otherwise add the difference between the cap and the current points
+                $addPoints = $cappedPoints - $currentPoints;
+            }
+            $this->points = $addPoints;
+        }
+        return $this->points;
     }
 }
