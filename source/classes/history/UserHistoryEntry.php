@@ -218,14 +218,10 @@ class UserHistoryEntry {
             $cappedPoints = PluginSettingsAccessor::getUserPointsCappedAt(); // 30
             $estimatedPoints = $currentPoints + $this->points;
             // Check if the estimated points are below the cap
-            if ($estimatedPoints <= $cappedPoints) {
-                // Only add points, when the current points are below the cap
-                $addPoints = $this->points;
-            } else {
+            if ($estimatedPoints > $cappedPoints) {
                 // Otherwise add the difference between the cap and the current points
-                $addPoints = $cappedPoints - $currentPoints;
+                $this->points = $currentPoints;
             }
-            $this->points = $addPoints;
         }
         return $this->points;
     }
