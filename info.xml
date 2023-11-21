@@ -7,7 +7,7 @@
     <PluginID>dh_bonuspunkte</PluginID>
     <XMLVersion>100</XMLVersion>
     <Icon></Icon>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <ShopVersion>5.0.0</ShopVersion>
     <CreateDate>2023-09-11</CreateDate>
     <Install>
@@ -69,7 +69,7 @@
                 </Setting>
 
                 <!-- Maximale Anzahl von Punkte -->
-                <Setting type="text" conf="N" sort="199">
+                <Setting type="text" conf="N" sort="110">
                     <Name>Obergrenze für Punkte</Name>
                     <Description>
                         Hier können Sie Einstellungen treffen, ob Kunden nur eine bestimmte Anzahl von Punkten erhalten dürfen, als
@@ -77,12 +77,12 @@
                     </Description>
                     <ValueName>headerPointsCap</ValueName>
                 </Setting>
-                <Setting type="checkbox" initialValue="off" conf="Y" sort="100">
+                <Setting type="checkbox" initialValue="off" conf="Y" sort="111">
                     <Name>Obergrenze für Punkte aktivieren</Name>
                     <Description>Hier kann eingestellt werden, ob der Kunde nur eine bestimmte Anzahl von Punkten erhalten darf</Description>
                     <ValueName>enablePointsCap</ValueName>
                 </Setting>
-                <Setting type="number" initialValue="off" conf="Y" sort="100">
+                <Setting type="number" initialValue="0" conf="Y" sort="112">
                     <Name>Obergrenze für maximale Punkte eines Kunden</Name>
                     <Description>Hier kann eingestellt werden, wie viele Punkte der Kunde erhalten darf</Description>
                     <ValueName>pointsCapValue</ValueName>
