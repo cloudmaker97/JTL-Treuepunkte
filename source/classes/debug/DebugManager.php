@@ -52,7 +52,7 @@ class DebugManager {
      */
     public static function getMessages(): array
     {
-        if($_SESSION[self::SESSION_KEY_NAME] == null) {
+        if($_SESSION[self::SESSION_KEY_NAME] == null || !isset($_SESSION[self::SESSION_KEY_NAME])) {
             $_SESSION[self::SESSION_KEY_NAME] = [];
         }
 

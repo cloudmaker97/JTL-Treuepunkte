@@ -93,17 +93,18 @@ abstract class AbstractPoints implements IReward
      * Creates a reward entry by the given parameters
      * @param int $bonusPoints The amount of bonus points
      * @param string|null $customText The text for the entry
+     * @param int|null $orderId The order id if the entry is related to an order
      * @param bool $isValued If the points are valued, otherwise it needs manual unlocking
      * @return void
      */
-    protected function createRewardEntry(int $bonusPoints, ?string $customText = null, bool $isValued = true): void
+    protected function createRewardEntry(int $bonusPoints, ?string $customText = null, ?int $orderId = null, bool $isValued = true): void
     {
         $userHistoryEntry = new UserHistoryEntry();
         if(is_null($customText)) {
             $customText = sprintf("Gutschrift am: %s", $this->getDateFormatted());
         }
         $customerId = $this->getCurrentCustomer()->kKunde;
-        $newEntry = $userHistoryEntry->createEntry($bonusPoints, $customText, $customerId, $isValued);
+        $newEntry = $userHistoryEntry->createEntry($bonusPoints, $customText, $customerId, $isValued, $orderId);
         $newEntry->save();
     }
 }

@@ -6,10 +6,9 @@
 
 namespace Plugin\dh_bonuspunkte;
 
-use JTL\Catalog\Product\Artikel;
+use Exception;
 use JTL\Events\Dispatcher;
 use JTL\Plugin\Bootstrapper;
-use JTL\Session\Frontend;
 use Plugin\dh_bonuspunkte\source\classes\frontend\PageController;
 use Plugin\dh_bonuspunkte\source\classes\frontend\script\ScriptManager;
 use Plugin\dh_bonuspunkte\source\classes\frontend\script\ScriptType;
@@ -86,10 +85,15 @@ class Bootstrap extends Bootstrapper
         });
         // Hook: Each visit, before the smarty template is rendered
         $this->dispatcher->listen('shop.hook.' . HOOK_SMARTY_OUTPUTFILTER, function ($args) {
-            (new ProductRewards())->reloadPageAfterCartChange();
-            (new VisitAbstractPoints($args))->executeRewardLogic();
-            $this->getScriptManager()->loadScript(ScriptType::DebugMessages);
-            $this->getScriptManager()->loadScript(ScriptType::WebpackInline);
+            try {
+                (new ProductRewards())->reloadPageAfterCartChange();
+                (new VisitAbstractPoints($args))->executeRewardLogic();
+                $this->getScriptManager()->loadScript(ScriptType::DebugMessages);
+                $this->getScriptManager()->loadScript(ScriptType::WebpackInline);
+            } catch (Exception) {
+                // If an exception is thrown, the page will be served without the bonus points
+                // Just in case something goes wrong, the user should still be able to use the shop
+            }
         });
 
         (new ProductRewards())->updateCartPositionsForRewardProducts();

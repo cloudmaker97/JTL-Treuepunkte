@@ -135,7 +135,6 @@ class UserHistoryEntry {
             DebugManager::addMessage(new DebugMessage("Punkte können nicht gutgeschrieben werden, da der Betrag <= 0 ist.", [
                 "object" => $this,
             ]));
-            return $this;
         }
 
         $dateNow = new DateTime();
@@ -160,21 +159,24 @@ class UserHistoryEntry {
      */
     public function save(): self {
         try {
-            $database = Shop::Container()->getDB();
-            $insertObject = new \stdClass();
-            if($this->id) {
-                $insertObject->id = $this->id;
+            if($this->getPointsWithCap()) {
+                $database = Shop::Container()->getDB();
+                $insertObject = new \stdClass();
+                if(isset($this->id)) {
+                    $insertObject->id = $this->id;
+                }
+                $insertObject->userId = $this->userId;
+                $insertObject->orderId = $this->orderId;
+                $insertObject->text = $this->text;
+                $insertObject->points = $this->getPointsWithCap();
+                $insertObject->createdAt = $this->createdAt?->format("Y-m-d H:i:s");
+                $insertObject->valuedAt = $this->valuedAt?->format("Y-m-d H:i:s");
+                $this->id = $database->upsert(self::TABLE_NAME, $insertObject);
+                DebugManager::addMessage(new DebugMessage("Neuer Punkte-Eintrag wurde gespeichert.", [
+                    "id" => $this->id
+                ]));
             }
-            $insertObject->userId = $this->userId;
-            $insertObject->orderId = $this->orderId;
-            $insertObject->text = $this->text;
-            $insertObject->points = $this->getPointsWithCap();
-            $insertObject->createdAt = $this->createdAt?->format("Y-m-d H:i:s");
-            $insertObject->valuedAt = $this->valuedAt?->format("Y-m-d H:i:s");
-            $this->id = $database->upsert(self::TABLE_NAME, $insertObject);
-            DebugManager::addMessage(new DebugMessage("Neuer Punkte-Eintrag wurde gespeichert.", [
-                "id" => $this->id
-            ]));
+
         } catch(Exception) {
             DebugManager::addMessage(new DebugMessage("Punkte-Eintrag konnte nicht gespeichert werden, unbekannter Fehler.", []));
         }

@@ -65,9 +65,15 @@ class CartAbstractPoints extends AbstractPoints
     private function getCartEvaluator(): CartEvaluator
     {
         $evaluator = new CartEvaluator();
-        $this->addEvaluator_perArticle($evaluator);
-        $this->addEvaluator_perArticleOnce($evaluator);
-        $this->addEvaluator_perEuro($evaluator);
+        if(PluginSettingsAccessor::getRewardPerArticleByDefault() > 0) {
+            $this->addEvaluator_perArticle($evaluator);
+        }
+        if(PluginSettingsAccessor::getRewardPerArticleOnceByDefault() > 0) {
+            $this->addEvaluator_perArticleOnce($evaluator);
+        }
+        if(PluginSettingsAccessor::getRewardPerValueEachEuroByDefault() > 0) {
+            $this->addEvaluator_perEuro($evaluator);
+        }
         $evaluator->evaluatePoints();
         return $evaluator;
     }
@@ -129,7 +135,7 @@ class CartAbstractPoints extends AbstractPoints
         // Only withdraw points if the cart is paid totally by the user
         if(!$this->getOrderIsPaidWithBalance()) {
             $customText = sprintf("Bestellung am %s ausgeführt: %s (%s)", $this->getDateFormatted(), $orderNumberClean, $orderNumber);
-            $this->createRewardEntry($evaluator->getAllResultPoints(), $customText);
+            $this->createRewardEntry($evaluator->getAllResultPoints(), $customText, $orderNumber);
         }
     }
 
@@ -137,6 +143,7 @@ class CartAbstractPoints extends AbstractPoints
      * Get if the order is paid with shop balance, this is always the case
      * if the fGuthaben value of the order is below zero.
      * @return bool
+     * @throws Exception
      */
     private function getOrderIsPaidWithBalance(): bool
     {
@@ -146,6 +153,7 @@ class CartAbstractPoints extends AbstractPoints
     /**
      * Set that the order status has been updated
      * @return void
+     * @throws Exception
      */
     public function setOrderStatusProcessed(): void
     {
@@ -157,6 +165,7 @@ class CartAbstractPoints extends AbstractPoints
     /**
      * Set that the order has been canceled by user or shop owner
      * @return void
+     * @throws Exception
      */
     public function setOrderStatusCanceled(): void
     {
