@@ -1,1 +1,0 @@
-- Maximale Punkteanzahl testen
