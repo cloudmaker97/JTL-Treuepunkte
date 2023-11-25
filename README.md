@@ -12,6 +12,7 @@ Das Plugin muss über einen offiziellen Installationsweg heruntergeladen werden.
 Dies ist in der Regel auf GitHub unter der Seite „Releases“. Bitte beachtet auch die dortigen Hinweise.
 
 Verbesserungsvorschläge oder sonstige Anmerkungen können gerne als Issue oder Pull Request eingereicht werden.
+Der Download zur Vorschau ist nur über den offiziellen Weg zu beziehen: [Releases](https://github.com/cloudmaker97/JTL-Treuepunkte/releases)
 
 ## Dokumentation
 
