@@ -20,17 +20,3 @@ Um die Kollaboration zu vereinfachen und zu fördern, wurde die Dokumentation vo
 Seite (veraltet) auf die Dokumentation-Funktion von GitHub umgestellt: [Inhaltsverzeichnis der Dokumentation](https://github.com/cloudmaker97/JTL-Treuepunkte/wiki)
 
 Wer die alte Dokumentation sucht (veraltet), kann diese hier finden: [Alte Dokumentation](https://dennis-heinrich.notion.site/Bonuspunkte-Pr-mien-9d611781b5a64ad5b2ca27acf7ca67c0)
-
-<style>
-  /* This is only for the plugin tab needed */
-  .markdown h2 {
-    border-bottom: 4px solid #eee;
-  }
-  .markdown h3 {
-    font-size: .9rem;
-    text-decoration: underline;
-  }
-  .markdown table {
-    margin-bottom: 1rem;
-  }
-</style>
