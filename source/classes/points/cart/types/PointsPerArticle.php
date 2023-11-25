@@ -1,6 +1,7 @@
 <?php
 namespace Plugin\dh_bonuspunkte\source\classes\points\cart\types;
 
+use JTL\Cart\CartItem;
 use Plugin\dh_bonuspunkte\source\interfaces\points\IPoint;
 
 /**
@@ -39,8 +40,10 @@ class PointsPerArticle implements IPoint {
 	
     /**
 	 * @inheritDoc
+     * @param CartItem $data
 	 */
 	public function getPointAmount($data): int {
+        if($data->nPosTyp !== C_WARENKORBPOS_TYP_ARTIKEL) return 0;
 		if(isset($data->Artikel->FunktionsAttribute[self::getFunctionAttributName()])) {
 			return $data->Artikel->FunktionsAttribute[self::getFunctionAttributName()] * $data->nAnzahl;
 		} else {

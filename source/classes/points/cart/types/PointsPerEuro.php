@@ -1,6 +1,7 @@
 <?php
 namespace Plugin\dh_bonuspunkte\source\classes\points\cart\types;
 
+use JTL\Cart\CartItem;
 use Plugin\dh_bonuspunkte\source\interfaces\points\IPoint;
 
 /**
@@ -53,8 +54,10 @@ class PointsPerEuro implements IPoint {
 	
     /**
 	 * @inheritDoc
+     * @param CartItem $data
 	 */
 	public function getPointAmount($data): int {
+        if($data->nPosTyp !== C_WARENKORBPOS_TYP_ARTIKEL) return 0;
 		if($data->fVK == null) return 0;
 		$price = $data->fVK[$this->isNetPrice];
 		$allArticlePrice = round($price * $data->nAnzahl);
