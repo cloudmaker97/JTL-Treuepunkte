@@ -34,13 +34,6 @@ jobs:
         working-directory: ./frontend/webpack
         run: rm -rf node_modules
 
-      - name: version
-        id: get_version
-        uses: michmich112/extract-version@main
-        with:
-          version-file: info.xml
-          schema: major.minor.build
-
       - name: zip
         run: |
           mkdir temp_dir
