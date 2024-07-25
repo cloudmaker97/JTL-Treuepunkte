@@ -2,7 +2,7 @@
 
 ## ⚠️ Einstellung der Entwicklung ⚠️
 
-Dieses Plugin erhält keine weiteren Updates mehr, da ich keine Zeit mehr für die Weiterentwicklung habe. Es kann nicht sichergestellt werden, dass dieses Plugin mit den Versionen von JTL-Shop einwandfrei funktioniert oder sogar Kompatiblität gewährleistet ist.
+Dieses Plugin erhält keine weiteren Updates mehr, da ich keine Zeit mehr für die Weiterentwicklung habe. Es kann nicht sichergestellt werden, dass dieses Plugin mit den Versionen von JTL-Shop einwandfrei funktioniert oder sogar Kompatiblität gewährleistet ist. 
 
 ## Allgemeines
 
